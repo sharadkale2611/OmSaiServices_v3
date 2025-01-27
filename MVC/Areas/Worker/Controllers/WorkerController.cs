@@ -12,6 +12,7 @@ using OmSaiServices.Worker.Implimentation;
 using OmSaiServices.Worker.Interfaces;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+
 namespace GeneralTemplate.Areas.Worker.Controllers
 {
 	[Area("Worker")]
@@ -31,6 +32,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		private readonly WorkerAddressService _workerAddressService;
 		private readonly SiteShiftService _siteShiftService;
 		private readonly WorkerShiftService _workerShiftService;
+		private readonly DashboardService _dashboardService;
 
 		public WorkerController()
 		{
@@ -47,17 +49,23 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			_workerAddressService = new WorkerAddressService();
 			_siteShiftService = new SiteShiftService();
 			_workerShiftService = new WorkerShiftService();
+			_dashboardService = new DashboardService();
+
 		}
 
 
-		public IActionResult Index()
+		public IActionResult Index(int id = 0)			// id refers SiteId here
 		{
-			ViewBag.AllData = _workerService.GetAll();
+
+			// Fetch site and worker data
+			ViewBag.SiteWorkerData = _dashboardService.GetSiteWorkerData();
+			ViewBag.AllData = _workerService.GetAllBySiteId(id);
 			ViewBag.Department=_departmentService.GetAll();
 			ViewBag.Sites= _siteService.GetAll();
 
 			ViewBag.Projects = _projectService.GetAll();
 			ViewBag.Workers = _workerService.GetAll();
+			ViewBag.SiteId = id;
 			return View();
 		}
 

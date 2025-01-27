@@ -18,6 +18,8 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		private readonly MultiMediaService _mms;
 		private readonly SiteService _siteService;
 		private readonly SiteShiftService _siteShiftService;
+		private readonly DashboardService _dashboardService;
+
 
 
 		public AttendanceController()
@@ -27,6 +29,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			_mms = new MultiMediaService();
 			_siteService = new SiteService();
 			_siteShiftService = new SiteShiftService();
+			_dashboardService = new DashboardService();
 
 		}
 

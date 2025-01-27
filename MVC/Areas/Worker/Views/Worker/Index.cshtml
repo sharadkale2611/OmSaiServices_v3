@@ -15,7 +15,7 @@
 
     <style>
         .btnEdit:hover {
-            cursor: pointer;
+        cursor: pointer;
         }
 
 
@@ -64,6 +64,40 @@
             <div class="col-lg-12 col-md-12 col-sm-12" id="leftCard">
                 <div class="card">
                     <div class="p-1" >
+                        <table id="tableSites" class="table  card-table table-vcenter text-nowrap table-hover hover-pointer">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No.</th>
+                                    <th>Site Name</th>
+                                    <th>Total Workers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var siteWorker in ViewBag.SiteWorkerData)
+                                {
+
+                                    <tr class="align-middle">
+                                        <td>@serialNumber</td>
+                                        <td>@siteWorker.SiteName</td>
+                                        <td>
+                                            <a asp-action="Index" asp-route-id="@siteWorker.SiteId" class="btn btn-secondary">
+                                                <span class="badge bg-primary">@siteWorker.WorkerCount</span> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    serialNumber++;
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            @if (ViewBag.SiteId != 0)
+            {
+            <div class="col-lg-12 col-md-12 col-sm-12" id="leftCard">
+                <div class="card">
+                    <div class="p-1" >
                         <table id="table" class="table table-responsive card-table table-vcenter text-nowrap">
                             <thead>
                                 <tr>
@@ -82,6 +116,9 @@
                                 </tr>
                             </thead>
                             <tbody >
+                                @{
+                                    serialNumber = 1    ;
+                                }
                                 @foreach (var worker in ViewBag.AllData)
                                 {
                                     
@@ -129,15 +166,13 @@
                                                     <i class="fe fe-trash"></i>
                                                 </a>
 
-                                                <a asp-area="worker" asp-controller="Attendance" asp-action="Create" asp-route-workmanId="@worker.WorkmanId" class="nav-link badge shadow m-1 text-info btn">
-                                                    <i class="fe fe-user-check"></i>
-                                                </a>
+                                                @* <a asp-area="worker" asp-controller="Attendance" asp-action="Create" asp-route-workmanId="@worker.WorkmanId" class="nav-link badge shadow m-1 text-info btn"> *@
+                                                @*     <i class="fe fe-user-check"></i> *@
+                                                @* </a> *@
 
-                                                <a class="nav-link badge shadow m-1 text-danger btn btn-attendance">
-                                                    @*  data-delete_id="@worker.DepartmentId"
-                                                        data-delete_display="@worker.DepartmentName"> *@
-                                                    <i class="bi bi-chevron-bar-right"></i>
-                                                </a>
+                                                @* <a class="nav-link badge shadow m-1 text-danger btn btn-attendance"> *@
+                                                @*     <i class="bi bi-chevron-bar-right"></i> *@
+                                                @* </a> *@
                                                 
 
                                             </nav>
@@ -153,7 +188,7 @@
                     </div>
                 </div>
             </div>
-        
+            }
         </div>
     </div>
 </div>
@@ -163,15 +198,21 @@
 
 }
 
-@section Scripts{
-
-
+@section Scripts {
+    @if (ViewBag.SiteId != 0)
+    {
+        <script>
+            $(document).ready(function() {
+                $('#table').DataTable();
+            });
+        </script>
+    }
     <script>
-
         $(document).ready(function() {
-            $('#table').DataTable();
+            $('#tableSites').DataTable();
         });
-
     </script>
+
+    
 }
 

@@ -131,6 +131,15 @@ namespace OmSaiServices.Worker.Implimentation
 		}
 
 
+		public List<WorkerModel> GetAllBySiteId(int SiteId)
+		{
+			// Define the mapping function
+			var mapEntity = new Func<IDataReader, WorkerModel>(reader => _mapper.MapEntity<WorkerModel>(reader));
+
+			return GetAll(sp_r, mapEntity, GetParams(null, null, null, SiteId));
+		}
+
+
 		public WorkerProfileModel GetProfileById(int? id = null, string? workmanId = null)
 		{
 			/*
@@ -285,15 +294,15 @@ namespace OmSaiServices.Worker.Implimentation
 			};
 		}
 
-
-		private SqlParameter[] GetParams(int? id = null, string? WorkmanId = null, int? DepartmentId = null)
+		private SqlParameter[] GetParams(int? id = null, string? WorkmanId = null, int? DepartmentId = null, int? SiteId = null)
 		{
 			return new SqlParameter[]
 			{
 				new SqlParameter("@WorkerId", id),
 				new SqlParameter("@WorkmanId", WorkmanId),
 
-				new SqlParameter("@DepartmentId", DepartmentId)
+				new SqlParameter("@DepartmentId", DepartmentId),
+				new SqlParameter("@SiteId", SiteId)
 
 			};
 		}
