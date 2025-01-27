@@ -72,14 +72,27 @@ namespace OmSaiServices.Worker.Implimentation
 			return CommonService.RowCount("Workers");
 		}
 
+		private string GenerateWorkmanId(string DepartmentShortName, int counter)
+		{
+			int incrementCount = RowCount() + counter;
+
+			string WorkerCode = $"{DepartmentShortName}{(incrementCount):00000000}"; // Ensures leading zeros up to 6 digits
+			var worker = GetByWorkManId(WorkerCode);
+			if (worker.Count != 0)
+			{
+				return GenerateWorkmanId(DepartmentShortName, ++counter);
+			}
+			return WorkerCode;
+		}
+
+
 		public int Create(WorkerModel model)
 		{
 			if(model.DepartmentShortName == "" || model.DepartmentShortName == null)
 			{
 				model.DepartmentShortName = "W";
 			}
-			string WorkerCode = $"{model.DepartmentShortName}{(RowCount() + 1):00000000}"; // Ensures leading zeros up to 6 digits
-			model.WorkmanId = WorkerCode;
+			model.WorkmanId = GenerateWorkmanId(model.DepartmentShortName, 1);
 			return Create(model, sp_cud, CreateUpdate(model, "create"));
 		}
 

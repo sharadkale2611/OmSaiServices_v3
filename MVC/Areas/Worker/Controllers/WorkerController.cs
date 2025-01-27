@@ -104,8 +104,13 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 				}
 			}
 
+			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
+			{
+				WorkerId = id,
+				RecordCount = 10
+			};
 
-			ViewBag.AttendanceHistory = _attendanceService.GetAll(id, null, null, null,10);
+			ViewBag.AttendanceHistory = _attendanceService.GetAll(Attendancefilter);
 			ViewBag.WorkerDocuments = _workerDocumentService.GetAll(id);
 			ViewBag.Addresses = _workerAddressService.GetByWorkerId(id);
 			ViewBag.SiteShifts = _siteShiftService.GetBySiteId(worker.SiteId);
@@ -171,7 +176,13 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			{
 				return RedirectToAction(nameof(Index));// nameof checks method compiletime to avoid errors
 			}
-			ViewBag.AttendanceHistory = _attendanceService.GetAll(id);
+
+			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
+			{
+				WorkerId = id
+			};
+
+			ViewBag.AttendanceHistory = _attendanceService.GetAll(Attendancefilter);
 			ViewBag.WorkerDocuments = _workerDocumentService.GetAll(id);
 			ViewBag.Addresses = _workerAddressService.GetByWorkerId(id);
 

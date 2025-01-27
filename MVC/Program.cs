@@ -60,7 +60,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddDistributedMemoryCache(); // For session
 builder.Services.AddSession(options =>
 {
-	options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+	options.IdleTimeout = TimeSpan.FromMinutes(60); // Set session timeout
 	options.Cookie.HttpOnly = true;
 	options.Cookie.IsEssential = true;
 	options.Cookie.SameSite = SameSiteMode.None; // Allows cross-origin requests

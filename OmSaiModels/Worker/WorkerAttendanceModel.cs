@@ -92,11 +92,19 @@ namespace OmSaiModels.Worker
 
 	}
 
-	public class WorkerAttendanceRequest
+	public class WorkerAttendanceFilter
 	{
 		public int? WorkerId { get; set; }
 		public int? SiteId { get; set; }
 		public DateOnly? CurrentDate { get; set; }
+		public string? WorkmanId { get; set; }
+		public int? RecordCount { get; set; }
+		public int? Month { get; set; }
+		public int? Year { get; set; }
+		public int? StartMonth { get; set; }
+		public int? EndMonth { get; set; }
+		public int? StartYear { get; set; }
+		public int? EndYear { get; set; }
 	}
 
 

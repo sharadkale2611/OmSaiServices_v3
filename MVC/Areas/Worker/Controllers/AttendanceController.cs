@@ -32,7 +32,12 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 		public IActionResult Index()
 		{
-			ViewBag.AttendanceHistory = _attendanceService.GetAll();
+			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
+			{
+				Year = DateTime.Now.Year
+			};
+
+			ViewBag.AttendanceHistory = _attendanceService.GetAll(Attendancefilter);
 			return View();
 		}
 
@@ -281,182 +286,6 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 
-		public IActionResult Create_Old(string workmanId)
-		{
-
-			var worker = _workerService.GetProfileById(null, workmanId);
-
-			if (worker == null || workmanId == null)
-			{
-				ViewData["Errpr"] = "Invalid WorkerId";
-				return RedirectToAction(nameof(Error));
-			}
-
-			int GraceTime = 10;     // In minutes
-			int halfDayIn = 60;     // In minutes
-			int graceTimeOut = 5;     // In minutes
-			int halfDayOut = 60;     // In minutes
-			var currentDate = DateOnly.FromDateTime(DateTime.Now); // Convert current date and time to DateOnly
-			var previousDate = currentDate.AddDays(-1);
-
-			var dateParam = worker.EndTime < worker.StartTime ? previousDate : currentDate;
-			var attendanceHistory = _attendanceService.GetAll(null, null, dateParam, workmanId, 1);
-
-			bool isAttendanceAllowed = false;
-			string InOutType = attendanceHistory.Count > 0 ? "out":"in";
-			string oldStatus = attendanceHistory.Count > 0 ? attendanceHistory[0].Status : "NA";
-			var (statusCode, remark) = ValidateAttendance(worker, GraceTime, halfDayIn, graceTimeOut, halfDayOut, InOutType);
-
-			/*
-
-				#################### Attendance Rules ##############################################
-
-				on-time-in	=>	0 To 10 Minutes
-				half-day-in =>	11 to 60 Minutes
-				absent-in	=>	61 to (Next day shift)	Attendance option closed for current day
-
-				on-time-out	 =>	0 to 5 Minutes early
-				half-day-out =>	6 to 60 Minutes early
-				early-exit	 => Before 61 Minute Attendanc option will available
-
-				on-time-in
-				half-day-in
-				on-time-out
-				early-exit
-				on-time-out
-				half-day-out
-				Present
-				Absent
-				Leave
-
-
-
-					IN				OUT						Remark
-				-------------------------------------------------------------------
-				on-time-in		on-time-out		-->		P (Present)
-				on-time-in		half-day-out	-->		HD (Half Day)
-				on-time-in		early-exit		-->		AB (Absent)
-				on-time-in		 -- 			-->		M (Miss Punch)
-
-				half-day-in		on-time-out		-->		HD (Half Day)
-				half-day-in		half-day-out	-->		AB (Absent)
-				half-day-in		early-exit		-->		AB (Absent)	
-				half-day-in		--				-->		M (Miss Punch)	
-
-				absent-in		on-time-out		-->		AB (Absent)
-				absent-in		half-day-out	-->		AB (Absent)
-				absent-in		early-exit		-->		AB (Absent)
-				absent-in		--				-->		AB (Absent)
-
-			*/
-
-
-			switch (statusCode)
-			{
-				case "on-time-in":
-						isAttendanceAllowed = true;
-						//InOutType = "in";
-
-					break;
-				case "half-day-in":
-						isAttendanceAllowed = true;
-						//InOutType = "in";
-					break;
-				case "absent-in":
-						isAttendanceAllowed = false;
-						//InOutType = "in";
-
-					break;
-				case "on-time-out":
-						isAttendanceAllowed = true;
-						//InOutType = "out";
-					break;
-				case "half-day-out":
-						isAttendanceAllowed = true;
-						//InOutType = "out";
-					break;
-				case "early-exit":
-					isAttendanceAllowed = false;
-					//InOutType = "out";
-					break;
-				case "shift-not-set":
-					isAttendanceAllowed = false;
-					break;
-				case "shift-not-started":
-					isAttendanceAllowed = false;
-					break;
-				default:
-						isAttendanceAllowed = false;
-						remark = "Something Went Wrong!";
-					break;
-			}
-
-				if(attendanceHistory.Count > 0)
-			{
-				if (attendanceHistory[0].InTime != null && attendanceHistory[0].OutTime != null)
-				{
-					isAttendanceAllowed = false;
-					remark = "Your today's attendance (In-Out) has been successfully recorded. Thank you!";
-				}
-
-			}
-
-			string NewStatus = "AB";
-
-			/*
-						IN				OUT						Remark
-				---------------------------------------------------------
-				1	on-time-in		on-time-out		-->		P (Present)
-				2	on-time-in		half-day-out	-->		HD (Half Day)
-				3	on-time-in		early-exit		-->		AB (Absent)
-				4	on-time-in		 -- 			-->		M (Miss Punch)
-
-				5	half-day-in		on-time-out		-->		HD (Half Day)
-				6	half-day-in		half-day-out	-->		AB (Absent)
-				7	half-day-in		early-exit		-->		AB (Absent)	
-				8	half-day-in		--				-->		M (Miss Punch)	
-
-				9	absent-in		on-time-out		-->		AB (Absent)
-				10	absent-in		half-day-out	-->		AB (Absent)
-				11	absent-in		early-exit		-->		AB (Absent)
-				12	absent-in		--				-->		AB (Absent)
-			*/
-
-			if (oldStatus == "on-time-in")
-			{
-				NewStatus = statusCode switch
-				{
-					"on-time-out" => "Present",     // P (Present)
-					"half-day-out" => "Half-Day",   // HD (Half Day)
-					"early-exit" => "Absent",       // AB (Absent)
-					_ => NewStatus
-				};
-			}
-			else if (oldStatus == "half-day-in")
-			{
-				NewStatus = statusCode switch
-				{
-					"on-time-out" => "Half-Day",    // HD (Half Day)
-					_ => "Absent"                   // AB (Absent)
-				};
-			}
-			else if (oldStatus == "absent-in")
-			{
-				NewStatus = "Absent";               // AB (Absent)
-			}
-
-
-			ViewBag.attendanceHistory = attendanceHistory;
-			ViewBag.isAttendanceAllowed = isAttendanceAllowed;
-			ViewBag.remark = remark;
-			ViewBag.InOutType = InOutType;
-			ViewBag.Worker = worker;
-			ViewBag.CurrentTime = dateParam;
-			ViewBag.Status = InOutType=="in"? statusCode: NewStatus;
-			return View();
-		}
-
-
 		[HttpPost]
 		[Route("api/WorkerAttendance")]
 		public async Task<IActionResult> WorkerAttendance([FromForm] WorkerAttendanceModel model, IFormFile SelfieImage)
@@ -537,6 +366,27 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 
+		// GET: Attendance/WorkerAttendanceDetails
+		public IActionResult WorkerAttendanceDetails()
+		{
+			var attendanceDetails = _attendanceService.GetWorkerAttendanceDetails();
+			return View(attendanceDetails);
+		}
+
+		// POST: Attendance/ManualAttendance
+		[HttpPost]
+		public IActionResult ManualAttendance(int workerId, DateTime inTime, DateTime outTime, string status)
+		{
+			try
+			{
+				_attendanceService.CreateOrUpdateWorkerAttendance(workerId, inTime, outTime, status);
+				return Json(new { success = true, message = "Attendance updated successfully!" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
 
 
 

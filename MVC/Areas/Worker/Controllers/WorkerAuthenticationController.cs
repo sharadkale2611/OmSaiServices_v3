@@ -315,8 +315,12 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		{
 			var WorkmanId = HttpContext.Session.GetString("WorkmanId");
 			var workrman = WorkmanId;
+			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
+			{
+				Year = DateTime.Now.Year
+			};
 
-			var attendanceHistory = _attendanceService.GetAll();
+			var attendanceHistory = _attendanceService.GetAll(Attendancefilter);
 			var worker = _workerService.GetProfileById(null, workrman);
 
 			if (worker == null || workrman == null)
@@ -368,7 +372,12 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			{
 				return RedirectToAction(nameof(Index));// nameof checks method compiletime to avoid errors
 			}
-			ViewBag.AttendanceHistory = _attendanceService.GetAll(workerId);
+			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
+			{
+				WorkerId = workerId
+			};
+
+			ViewBag.AttendanceHistory = _attendanceService.GetAll(Attendancefilter);
 			ViewBag.WorkerDocuments = _workerDocumentService.GetAll(workerId);
 			ViewBag.Addresses = _workerAddressService.GetByWorkerId(workerId??0);
 			ViewBag.IsSignedIn = true;

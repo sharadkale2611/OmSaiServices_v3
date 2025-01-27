@@ -31,7 +31,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		[HttpPost("worker-attendance-report")]
 		[Authorize(AuthenticationSchemes = "Jwt")]
 
-		public async Task<IActionResult> WorkerAttendanceReport([FromBody] WorkerAttendanceRequest request)
+		public async Task<IActionResult> WorkerAttendanceReport([FromBody] WorkerAttendanceFilter request)
 		{
 			if (request == null)
 			{
@@ -39,7 +39,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			}
 			// Validate the parameters
 			// Validate that at least one of the parameters is provided
-			if (!request.WorkerId.HasValue && !request.SiteId.HasValue && !request.CurrentDate.HasValue)
+			if (!request.WorkerId.HasValue && !request.SiteId.HasValue && !request.CurrentDate.HasValue && !request.Month.HasValue && !request.Year.HasValue)
 			{
 				return BadRequest(new
 				{
@@ -47,16 +47,15 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 					data = (object)null,
 					errors = new
 					{
-						message = "At least one parameter (WorkerId, SiteId, or CurrentDate) must be provided."
+						message = "At least one parameter (WorkerId, SiteId, Month, Year or CurrentDate) must be provided."
 					}
 				});
 			}
 
-
 			try
 			{
 				// Retrieve attendance history from the service
-				var attendanceHistory =  _attendanceService.GetAll(request.WorkerId, request.SiteId, request.CurrentDate);
+				var attendanceHistory =  _attendanceService.GetAll(request);
 
 				// Return a successful response
 				return Ok(new

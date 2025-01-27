@@ -142,17 +142,25 @@ namespace OmSaiServices.Worker.Implementations
 		}
 
 
-		public List<WorkerAttendanceViewModel> GetAll(int? WorkerId = null, int? SiteId = null, DateOnly? CurrentDate = null, string? WorkmanId = null, int? RecordCount = null)
+		public List<WorkerAttendanceViewModel> GetAll(WorkerAttendanceFilter filter)
 		{
 			var mapEntity = new Func<IDataReader, WorkerAttendanceViewModel>(reader => _mapper.MapEntity<WorkerAttendanceViewModel>(reader));
 
 			var parameters = new[]
 			   {
-					new SqlParameter("@WorkerId", WorkerId ?? (object)DBNull.Value),
-					new SqlParameter("@SiteId", SiteId ?? (object)DBNull.Value),
-					new SqlParameter("@CurrentDate", CurrentDate),
-					new SqlParameter("@WorkmanId", WorkmanId),
-					new SqlParameter("@RecordCount", RecordCount)
+					new SqlParameter("@WorkerId", filter.WorkerId ?? (object)DBNull.Value),
+					new SqlParameter("@SiteId", filter.SiteId ?? (object)DBNull.Value),
+					new SqlParameter("@CurrentDate", filter.CurrentDate),
+					new SqlParameter("@WorkmanId", filter.WorkmanId),
+					new SqlParameter("@RecordCount", filter.RecordCount),
+
+					new SqlParameter("@Month", filter.Month ?? (object)DBNull.Value),
+					new SqlParameter("@Year", filter.Year ?? (object)DBNull.Value),
+					new SqlParameter("@StartMonth", filter.StartMonth ?? (object)DBNull.Value),
+					new SqlParameter("@EndMonth", filter.EndMonth ?? (object)DBNull.Value),
+					new SqlParameter("@StartYear", filter.StartYear ?? (object)DBNull.Value),
+					new SqlParameter("@EndYear", filter.EndYear ?? (object)DBNull.Value),
+
 				};
 
 			return QueryService.Query("usp_GetAttendanceData", mapEntity, parameters);
@@ -191,6 +199,34 @@ namespace OmSaiServices.Worker.Implementations
 			 QueryService.NonQuery("usp_GenerateAttendanceLedger",  parameters);
 		}
 
+
+		//TO GET WORKER MANUAL ATTENDANCE
+		public List<WorkerAttendanceDetailsViewModel> GetWorkerAttendanceDetails()
+		{
+			var mapEntity = new Func<IDataReader, WorkerAttendanceDetailsViewModel>(reader => _mapper.MapEntity<WorkerAttendanceDetailsViewModel>(reader));
+
+			// Execute stored procedure and return results
+			return QueryService.Query("usp_GetWorkerAttendanceDetails", mapEntity);
+		}
+
+		// Method to create or update worker attendance
+		public void CreateOrUpdateWorkerAttendance(int workerId, DateTime inTime, DateTime outTime, string status)
+		{
+			using (var connection = new SqlConnection("Server=A2NWPLSK14SQL-v04.shr.prod.iad2.secureserver.net;Database=om_sai_services_db_v1;User Id=omuser;Password=YSAAS#2024;TrustServerCertificate=True"))
+			{
+				using (var command = new SqlCommand("usp_CreateUpdateManualWorkerAttendance", connection))
+				{
+					command.CommandType = CommandType.StoredProcedure;
+					command.Parameters.AddWithValue("@WorkerId", workerId);
+					command.Parameters.AddWithValue("@InTime", inTime);
+					command.Parameters.AddWithValue("@OutTime", outTime);
+					command.Parameters.AddWithValue("@Status", status);
+
+					connection.Open();
+					command.ExecuteNonQuery();
+				}
+			}
+		}
 
 
 	}
