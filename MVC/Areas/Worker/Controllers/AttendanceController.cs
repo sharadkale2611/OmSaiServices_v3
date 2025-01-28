@@ -395,7 +395,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 		public IActionResult Error(string id)
 		{
-			ViewBag.WorkerId = id;
+			ViewBag.WorkerId = id;	// test
 
 			return View();
 		}
