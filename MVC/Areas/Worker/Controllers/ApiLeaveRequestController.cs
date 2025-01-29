@@ -16,8 +16,9 @@ using OmSaiServices.Worker.Interfaces;
 
 namespace GeneralTemplate.Areas.Worker.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/worker-leave")]
 	[ApiController]
+	[Authorize(AuthenticationSchemes = "Jwt")]
 	public class ApiLeaveRequestController : ControllerBase
 	{
 		private readonly LeaveRequestService _leaveRequestService;
@@ -31,7 +32,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			_leaveTypeservice = new LeaveTypeService();
 		}
 
-		[HttpGet("get-all-leave-request")]
+		[HttpGet("get-all-leaves")]
 		//[Authorize(AuthenticationSchemes = "Jwt")]
 		public IActionResult GetAllLeaveRequestId()
 		{
@@ -55,7 +56,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			return Ok(new { message = "This is a protected id" });
 		}
 
-		[HttpGet("get-by-worker-id")]
+		[HttpGet("get-by-worker-id/{id}")]
 		//[Authorize(AuthenticationSchemes = "Jwt")]
 		public IActionResult GetByWorkerId(int id)
 		{
@@ -81,7 +82,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			return Ok(new { message = "This is a protected id" });
 		}
 
-		[HttpGet("get-by-id")]
+		[HttpGet("get-by-id/{id}")]
 		//[Authorize(AuthenticationSchemes = "Jwt")]
 		public IActionResult GetById(int id)
 		{
@@ -108,7 +109,6 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 		[HttpPost]
 		[Route("create-leave-request")]
-		//[Authorize(AuthenticationSchemes = "Jwt")]
 		public async Task<IActionResult> CreateLeaveRequest([FromBody] LeaveRequestModel model)
 		{
 			try

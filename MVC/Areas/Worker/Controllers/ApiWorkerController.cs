@@ -32,6 +32,41 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 		}
 
+        
+        [HttpGet("get-site-shift/{id}")]
+        [Authorize(AuthenticationSchemes = "Jwt")]
+		public async Task<IActionResult> GetSiteShift(int id)
+		{
+			try
+            {
+
+                var worker = await _workerService.GetSiteShifts(id);
+                if (worker == null)
+                {
+                    var errors = new
+                    {
+                        WorkmanId = new[] { "Worker Site Shift not found!" }
+                    };
+                    return BadRequest(new ApiResponseModel<object>(false, null, errors));
+                }
+
+                return Ok(new ApiResponseModel<object>(true, worker, null));
+
+            }
+            catch (Exception ex)
+            {
+				var errors = new
+				{
+					message = new[] { ex.Message }
+				};
+
+				return BadRequest(new ApiResponseModel<object>(false, null, errors));
+
+			}
+
+		}
+
+
 		[HttpGet("profile/{id}")]
 		[Authorize(AuthenticationSchemes = "Jwt")]
 		public IActionResult GetProfile(int id)

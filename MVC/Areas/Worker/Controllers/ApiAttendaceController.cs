@@ -116,7 +116,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 					{
 						SelfieImage = new[] { "Selfie image is required!" }
 					};
-					return Unauthorized(new ApiResponseModel<object>(false, null, errors));
+					return BadRequest(new ApiResponseModel<object>(false, null, errors));
 				}
 
 				try
@@ -183,6 +183,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 				ValidateAttendanceModel validateData = _attendanceService.ValidateAttendance(worker.WorkerId);
 
+			
 				// Return a successful response
 				return Ok(new
 				{

@@ -27,7 +27,7 @@ namespace OmSaiModels.Worker
 		[Required]
 		public int DepartmentId { get; set; }
 
-		public string ProfileImage { get; set; }
+		public string? ProfileImage { get; set; }
 
 		public string? DepartmentName { get; set; }
 		public string? DepartmentShortName { get; set; }
@@ -73,6 +73,18 @@ namespace OmSaiModels.Worker
 
 	}
 
+
+	public class WorkerSiteShiftDetailsModel
+	{
+		public int SiteId { get; set; }
+		public int SiteShiftId { get; set; }
+		public string SiteName { get; set; }
+		public string SiteLocation { get; set; }
+		public string ShiftName { get; set; }
+		public TimeOnly StartTime { get; set; }
+		public TimeOnly EndTime { get; set; }
+
+	}
 
 
 
