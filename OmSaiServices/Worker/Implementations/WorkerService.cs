@@ -67,6 +67,41 @@ namespace OmSaiServices.Worker.Implimentation
 		}
 
 
+		public async Task<WorkerSiteShiftDetailsModel> GetSiteShifts(int WorkerId)
+		{
+			// Map database result to WorkerModel
+			var mapEntity = new Func<IDataReader, WorkerSiteShiftDetailsModel>(reader =>
+			{
+					return new WorkerSiteShiftDetailsModel
+					{
+						SiteId = Convert.ToInt32(reader["SiteId"]),
+						SiteShiftId = Convert.ToInt32(reader["SiteShiftId"]),
+
+						SiteName = reader["SiteName"] as string,
+						SiteLocation = reader["SiteLocation"] as string,
+						ShiftName = reader["ShiftName"] as string,
+
+						StartTime = TimeOnly.Parse(reader["StartTime"].ToString()), // Convert to TimeOnly
+						EndTime = TimeOnly.Parse(reader["EndTime"].ToString()) // Convert to TimeOnly
+					};
+			});
+
+			// Define parameters for stored procedure
+			var parameters = new SqlParameter[]
+			{
+				new SqlParameter("@WorkerId", WorkerId)
+			};
+
+			// Execute query and map results
+			var result = QueryService.Query("usp_GetWorkerSiteShiftDetails", mapEntity, parameters);
+
+			var workerSiteShifts = result.FirstOrDefault();
+
+			return workerSiteShifts;
+		}
+
+
+
 		public int RowCount()
 		{
 			return CommonService.RowCount("Workers");
@@ -338,19 +373,15 @@ namespace OmSaiServices.Worker.Implimentation
 
             var parameters = new SqlParameter[]
             {
-        new SqlParameter("@WorkerId", workerId),
-        new SqlParameter("@ProfileImage", profileImage)
+				new SqlParameter("@WorkerId", workerId),
+				new SqlParameter("@ProfileImage", profileImage)
             };
 
 
             var result = QueryService.Query("usp_Update_WorkerProfileImage", mapEntity, parameters);
 
-
             return result?.FirstOrDefault();
         }
-
-
-
 
         public bool ChangePassword(int WorkerId, string oldPassword, string newPassword)
 		{
