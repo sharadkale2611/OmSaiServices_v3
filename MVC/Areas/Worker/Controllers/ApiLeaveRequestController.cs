@@ -17,7 +17,7 @@ using OmSaiServices.Worker.Interfaces;
 namespace GeneralTemplate.Areas.Worker.Controllers
 {
 	[Route("api/worker-leave")]
-	[ApiController]
+	//[ApiController]
 	[Authorize(AuthenticationSchemes = "Jwt")]
 	public class ApiLeaveRequestController : ControllerBase
 	{
@@ -32,8 +32,30 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			_leaveTypeservice = new LeaveTypeService();
 		}
 
+		//exec usp_GetAll_LeaveTypes
+
+		[HttpGet("get-all-leave-types")]
+		public IActionResult GetAllLeaveTypes()
+		{
+			var request = _leaveRequestService.GetAllLeaveTypes();
+			if (request == null)
+			{
+				var errors = new
+				{
+					LeaveRequestId = new[] { "Leave Types not found!" }
+				};
+				return BadRequest(new ApiResponseModel<object>(false, null, errors));
+			}
+			//var type = _leaveTypeservice.GetById(id);
+
+			return Ok(new ApiResponseModel<object>(true, new
+			{
+				request,
+				//type,
+			}, null));
+		}
+
 		[HttpGet("get-all-leaves")]
-		//[Authorize(AuthenticationSchemes = "Jwt")]
 		public IActionResult GetAllLeaveRequestId()
 		{
 			var request = _leaveRequestService.GetAll();
@@ -107,6 +129,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 			return Ok(new { message = "This is a protected id" });
 		}
+
 		[HttpPost]
 		[Route("create-leave-request")]
 		public async Task<IActionResult> CreateLeaveRequest([FromBody] LeaveRequestModel model)
@@ -115,27 +138,17 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					var result = _leaveRequestService.Create(model);
-					//return Ok(new
-					//{
-					//	success = true,
-					//	message = "Record added successfully!"
-					//});
+					var result = await _leaveRequestService.Create(model);
 					return Ok(new ApiResponseModel<object>(true, result, null));
-
 				}
 				else
-				{									
-					var errors = new
-					{
-						LeaveRequestId = new[] { "Leave Request not found!" }
-					};
+				{
+					var errors = ModelState.ToDictionary(
+							   key => key.Key,
+							   value => value.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+						   );
+
 					return BadRequest(new ApiResponseModel<object>(false, null, errors));
-					//return BadRequest(new
-					//{
-					//	success = false,
-					//	errors = errorMessages
-					//});
 				}
 			}
 			catch (Exception ex)

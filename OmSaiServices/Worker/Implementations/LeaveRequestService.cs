@@ -6,11 +6,13 @@ using OmSaiServices.Common;
 using OmSaiServices.Worker.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OmSaiServices.Worker.Implementations
 {
@@ -27,9 +29,20 @@ namespace OmSaiServices.Worker.Implementations
 			_mapper = new Mapper();
 		}
 
-		public int Create(LeaveRequestModel model)
+
+		
+		public List<LeaveTypeModel> GetAllLeaveTypes()
 		{
-			return Create(model, sp_cud, CreateUpdate(model, "create"));
+			var mapEntity = new Func<IDataReader, LeaveTypeModel>(reader => _mapper.MapEntity<LeaveTypeModel>(reader));
+
+			return QueryService.Query("usp_GetAll_LeaveTypes", mapEntity, []);
+
+		}
+
+
+		public async Task<int> Create(LeaveRequestModel model)
+		{
+			return await Task.FromResult(Create(model, sp_cud, CreateUpdate(model, "create")));
 		}
 
 		public void Update(LeaveRequestModel model)
