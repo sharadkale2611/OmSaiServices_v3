@@ -14,5 +14,7 @@ namespace OmSaiModels.Worker
         public int WorkerId { get; set; }
         public String? WorkerName { get; set; }
         public String MobileNumber { get; set; }
-    }
+		//public bool IsDeleted { get; set; }
+
+	}
 }

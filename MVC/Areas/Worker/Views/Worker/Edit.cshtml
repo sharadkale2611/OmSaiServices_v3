@@ -36,7 +36,7 @@
 
 
 
-	var WorkerAddressId1 = address != null &&address.Count > 0 ?  address[0].WorkerAddressId ?? "" :"";
+	var WorkerAddressId1 = address != null && address.Count > 0 ? address[0].WorkerAddressId ?? "" : "";
 	var WorkerAddressId2 = address != null && address.Count > 1 ? address[1].WorkerAddressId ?? "" : "";
 
 }
@@ -59,16 +59,6 @@
 
 							<div class="row border-bottom border-danger pb-2 mb-2">
 
-								@* 	<div class="col-md-4  mb-3"> *@
-								@* 		<label for="SiteId" class="col-form-label">Site Name</label> *@
-								@* 		<select class="form-control" id="SiteId" name="siteId" required> *@
-								@* 			<option value="">Select Site</option> *@
-								@* 			@foreach (var site in ViewBag.Sites) *@
-								@* 			{ *@
-								@* 				<option value="@site.SiteId">@site.SiteName</option> *@
-								@* 			} *@
-								@* 		</select> *@
-								@* 	</div> *@
 
 
 								<div class="col-md-4  mb-3">
@@ -81,7 +71,7 @@
 										}
 									</select>
 									<input type="hidden" class="form-control" asp-for="DepartmentShortName">
-									<span asp-validation-for="DepartmentName" class="text-danger"></span>
+									<span asp-validation-for="DepartmentName" id="DepartmentIdError" class="text-danger error-message"></span>
 								</div>
 
 
@@ -91,18 +81,18 @@
 							<div class="row ">
 								<div class="col-md-4  mb-3">
 									<label asp-for="FirstName" class="col-form-label">First Name</label>
-									<input type="text" class="form-control" asp-for="FirstName" placeholder="FirstName" required>
-									<span asp-validation-for="FirstName" class="text-danger"></span>
+									<input type="text" class="form-control" id="FirstName" asp-for="FirstName" placeholder="FirstName" required>
+									<span asp-validation-for="FirstName" id="FirstNameError" class="text-danger error-message"></span>
 								</div>
 								<div class="col-md-4  mb-3">
 									<label asp-for="MiddleName" class="col-form-label">MiddleName</label>
-									<input type="text" class="form-control" asp-for="MiddleName" placeholder="MiddleName" required>
-									<span asp-validation-for="MiddleName" class="text-danger"></span>
+									<input type="text" class="form-control" id="MiddleName" asp-for="MiddleName" placeholder="MiddleName" required>
+									<span asp-validation-for="MiddleName" id="MiddleNameError" class="text-danger error-message"></span>
 								</div>
 								<div class="col-md-4  mb-3">
 									<label asp-for="LastName" class="col-form-label">LastName</label>
-									<input type="text" class="form-control" asp-for="LastName" placeholder="LastName" required>
-									<span asp-validation-for="LastName" class="text-danger"></span>
+									<input type="text" class="form-control" id="LastName" asp-for="LastName" placeholder="LastName" required>
+									<span asp-validation-for="LastName" id="LastNameError" class="text-danger error-message"></span>
 								</div>
 
 							</div>
@@ -116,12 +106,12 @@
 
 								<div class="col-md-4  mb-3">
 									<label asp-for="Age" class="col-form-label">Age</label>
-									<input type="number" class="form-control" asp-for="Age" placeholder="Age" required>
+									<input type="number" class="form-control" asp-for="Age" placeholder="Age" id="Age" name="Age" required>
 									<span asp-validation-for="Age" class="text-danger"></span>
 								</div>
 								<div class="col-md-4  mb-3">
 									<label asp-for="Gender" class="col-form-label">Gender</label>
-									<select class="form-control" type="text" asp-for="Gender" placeholder="Gender" required>
+									<select class="form-control" type="text" id="Gender" asp-for="Gender" placeholder="Gender" required>
 										<option value="">Select Gender</option>
 										@foreach (string gender in GenderList)
 										{
@@ -129,27 +119,27 @@
 										}
 									</select>
 
-									<span asp-validation-for="Gender" class="text-danger"></span>
+									<span asp-validation-for="Gender" id="GenderError" class="text-danger error-message"></span>
 								</div>
 							</div>
 
 							<div class="row border-bottom border-danger pb-2 mb-2">
 								<div class="col-md-4  mb-3">
 									<label asp-for="MarritalStatus" class="col-form-label">Marrital Status</label>
-									<select class="form-control" type="text" asp-for="MarritalStatus" placeholder="Marrital Status" required>
+									<select class="form-control" type="text" id="MaritalStatus" asp-for="MarritalStatus" placeholder="Marrital Status" required>
 										<option value="">Select Marrital Status</option>
 										@foreach (string m in MarriedList)
 										{
 											<option value="@m">@m</option>
 										}
 									</select>
-									<span asp-validation-for="MarritalStatus" class="text-danger"></span>
+									<span asp-validation-for="MarritalStatus" id="MaritalStatusError" class="text-danger error-message"></span>
 								</div>
 
 								<div class="col-md-4  mb-3">
 									<label asp-for="SpouseName" class="col-form-label">Spouse Name</label>
-									<input type="text" class="form-control" asp-for="SpouseName" placeholder="Spouse Name(Partner Name)" required>
-									<span asp-validation-for="SpouseName" class="text-danger"></span>
+									<input type="text" class="form-control" id="SpouseName" asp-for="SpouseName" placeholder="Spouse Name(Partner Name)" required>
+									<span asp-validation-for="SpouseName" id="SpouseNameError" class="text-danger error-message"></span>
 								</div>
 
 								<div class="col-md-4  mb-3">
@@ -162,13 +152,19 @@
 							<div class="row">
 								<input type="hidden" name="WorkerAddressId1" value="@WorkerAddressId1" />
 								<div class="col-md-6 mb-3">
-									<label for="Address1" class="form-label">Permanent Address</label>
-									<textarea name="Address1" class="form-control">@PermanentAddress</textarea>
+									<label for="Address1" class="col-form-label d-flex justify-content-between align-items-center">Permanent Address
+										<button type="button" class="badge bg-primary" onclick="copyToCurrentAddress()">Same as Current Address</button>
+									</label>
+									<textarea id="Address1" name="Address1" class="form-control">@PermanentAddress</textarea>
+									<span id="Address1Error" class="text-danger error-message"></span>
 								</div>
 								<div class="col-md-6 mb-3">
 									<input type="hidden" name="WorkerAddressId2" value="@WorkerAddressId2" />
-									<label for="Address2" class="form-label">Current Address</label>
-									<textarea name="Address2" class="form-control">@CurrentAddress</textarea>
+									<label for="Address2" class="col-form-label col-form-label d-flex justify-content-between align-items-center">Current Address
+										<button type="button" class="badge bg-primary" onclick="copyToPermanentAddress()">Same as Permanent Address</button>
+									</label>
+									<textarea id="Address2" name="Address2" class="form-control">@CurrentAddress</textarea>
+									<span id="Address2Error" class="text-danger error-message"></span>
 								</div>
 							</div>
 
@@ -185,6 +181,7 @@
 										}
 									</select>
 									<input type="hidden" id="ProjectIdTemp" value="@Worker.ProjectId" />
+									<span id="projectError" class="text-danger error-message"></span>
 								</div>
 
 								<div class="col-md-4 mb-3">
@@ -197,6 +194,8 @@
 										}
 									</select>
 									<input type="hidden" id="SiteIdTemp" value="@Worker.SiteId" />
+									<span id="siteError" class="text-danger error-message"></span>
+
 								</div>
 
 								<div class="col-md-4 mb-3">
@@ -210,19 +209,28 @@
 
 									</select>
 									<input type="hidden" id="QualificationIdTemp" value="@Worker.QualificationId" />
-								</div>
+									<span id="qualificationError" class=" text-danger error-message"></span>
 
+								</div>
+								@{
+									var mobilenumber = TempData["MobileNumber"] as string;
+									var mobilenumber2 = TempData["MobileNumber2"] as string;
+
+								}
 								<div class="col-md-4 form-group">
 									<input type="hidden" name="WorkerMobileNumberId1" value="@WorkerMobileNumberId1" />
 									<label class="form-label">Mobile Number</label>
-									<input type="text" class="form-control" name="MobileNumber" id="MobileNumber" placeholder="Mobile Number" value="@MobileNumber" />
+									<input type="number" class="form-control" name="MobileNumber" id="MobileNumber" placeholder="Mobile Number" value="@mobilenumber" />
+									<span id="MobileNumberError" class="text-danger  error-message"></span>
+
 								</div>
 
 								<div class="col-md-4 form-group">
 									<input type="hidden" name="WorkerMobileNumberId2" value="@WorkerMobileNumberId2" />
-
 									<label class="form-label">Alternate Mobile Number</label>
-									<input type="text" class="form-control" name="MobileNumber2" id="MobileNumber2" placeholder="Alternate Mobile Number" value="@MobileNumber2" />
+									<input type="number" class="form-control" name="MobileNumber2" id="MobileNumber2" placeholder="Alternate Mobile Number" value="@mobilenumber2" />
+									<span id="MobileNumber2Error" class="text-danger  error-message"></span>
+
 								</div>
 
 							</div>
@@ -254,5 +262,283 @@
 			$('#MobileNumber2').val(MobileNumber2);
 
 		});
+
+
+		$(document).ready(function () {
+			// Check if TempData contains errors for MobileNumber
+			var mobileNumbersErrorMessage = '@TempData["MobileNumbersError"] ';
+			if (mobileNumbersErrorMessage) {
+				// Set the error message for Mobile Number
+				$("#MobileNumberError").text(mobileNumbersErrorMessage).show();
+			}
+
+			// Check if TempData contains errors for MobileNumber2
+			var mobileNumber2ErrorMessage = '@TempData["MobileNumber2Error"] ';
+			if (mobileNumber2ErrorMessage) {
+				// Set the error message for Alternate Mobile Number
+				$("#MobileNumber2Error").text(mobileNumber2ErrorMessage).show();
+			}
+		});
+
+		function copyToCurrentAddress() {
+			const permanentAddress = document.getElementById('Address2').value;
+			if(permanentAddress.trim() != "")
+			document.getElementById('Address1').value = permanentAddress;
+		}
+
+		function copyToPermanentAddress() {
+			const currentAddress = document.getElementById('Address1').value;
+			if(currentAddress.trim() != "")
+			document.getElementById('Address2').value = currentAddress;
+		}
+
+		// Handle department short name update when selecting a department
+		$("#DepartmentId").change(function () {
+			var selectedOption = $(this).find(':selected');
+			var shortName = selectedOption.data('department_short_name');
+			$('#DepartmentShortName').val(shortName);
+		});
+
+		$(document).ready(function () {
+			function showError(fieldId, message) {
+				$("#" + fieldId + "Error").text(message).show();
+			}
+
+			function clearError(fieldId) {
+				$("#" + fieldId + "Error").text("").hide();
+			}
+
+			function validateDOB(value) {
+				const dob = new Date(value);
+				const minDate = new Date("1975-01-01");
+				const maxDate = new Date();
+				maxDate.setFullYear(maxDate.getFullYear() - 16);
+
+				if (!value) return "Date of Birth is required.";
+				if (dob < minDate) return "Date of Birth must be after Jan 1, 1975.";
+				if (dob > maxDate) return "Worker must be at least 16 years old.";
+				return ""; // No error
+			}
+
+			function validateJoiningDate(value) {
+				const joinDate = new Date(value);
+				const minDate = new Date("2010-01-01");
+				const today = new Date();
+
+				if (!value) return "Date of Joining is required.";
+				if (joinDate < minDate) return "Joining Date must be after Jan 1, 2010.";
+				if (joinDate > today) return "Joining Date cannot be in the future.";
+				return ""; // No error
+			}
+
+			// Calculate Age in Years
+			function calculateAge(dob) {
+				const today = new Date();
+				let age = today.getFullYear() - dob.getFullYear();
+				const monthDiff = today.getMonth() - dob.getMonth();
+				const dayDiff = today.getDate() - dob.getDate();
+
+				// Adjust age if the birthday hasn't occurred yet this year
+				if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+					age--;
+				}
+				return age;
+			}
+
+
+			// Attach focusout event
+			$("#DateofBirth").on("focusout", function () {
+				const value = $(this).val();
+				const errorMessage = validateDOB(value);
+
+				if (errorMessage) {
+					$("#dobError").text(errorMessage);
+					$("#ageDisplay").text(""); // Clear age display
+					$(this).focus(); // Refocus on the input
+
+				} else {
+					$("#dobError").text(""); // Clear error message
+
+					// If valid, calculate and display age
+					const dob = new Date(value);
+					const age = calculateAge(dob);
+					$("#Age").val(age);
+				}
+			});
+
+
+			// Date of Joining Validation
+			$("#DateofJoining").on("focusout", function () {
+				let error = validateJoiningDate($(this).val());
+				if (error) showError("joiningError", error);
+				else clearError("joiningError");
+			});
+
+			$('#workerForm').submit(function (e) {
+
+				e.preventDefault(); // Prevent form submission initially
+				let isValid = true;
+
+				$(".error-message").hide(); // Clear previous errors
+
+				// Department Validation
+				let departmentId = $('#DepartmentId').val();
+				if (!departmentId) {
+
+					showError("DepartmentId", "Select a department.");
+					isValid = false;
+				} else {
+
+					clearError("DepartmentId");
+				}
+
+				// Name Validation
+				let namePattern = /^[A-Za-z\s]+$/;
+
+				let firstName = $('#FirstName').val().trim();
+				if (!firstName || !namePattern.test(firstName)) {
+					showError("FirstName", "Enter a valid First Name.");
+					isValid = false;
+				} else {
+					clearError("FirstName");
+				}
+
+				let middleName = $('#MiddleName').val().trim();
+				if (middleName && !namePattern.test(middleName)) {
+					showError("MiddleName", "Middle Name should contain only letters.");
+					isValid = false;
+				} else {
+					clearError("MiddleName");
+				}
+
+				let lastName = $('#LastName').val().trim();
+				if (!lastName || !namePattern.test(lastName)) {
+					showError("LastName", "Enter a valid Last Name.");
+					isValid = false;
+				} else {
+					clearError("LastName");
+				}
+
+				// Gender Validation
+				let gender = $("#Gender").val();
+				if (!gender) {
+					showError("Gender", "Please select Gender.");
+					isValid = false;
+				} else {
+					clearError("Gender");
+				}
+
+				// Marital Status Validation
+				let maritalStatus = $("#MaritalStatus").val();
+				if (!maritalStatus) {
+					showError("MaritalStatus", "Select marital status.");
+					isValid = false;
+				} else {
+					clearError("MaritalStatus");
+				}
+
+				// Spouse Name Validation (Required only if Married)
+				let spouseName = $("#SpouseName").val().trim();
+
+				//Regular expression to allow only alphabets (including spaces between words)
+				let namePattern1 = /^[A-Za-z\s]+$/;
+
+				if (maritalStatus === "Married") {
+					if (!spouseName) {
+						showError("SpouseName", "Spouse Name is required for Married status.");
+						isValid = false;
+
+					} else if (!namePattern1.test(spouseName)) {
+						showError("SpouseName", "Spouse Name should contain only letters.");
+						isValid = false;
+					} else {
+						clearError("SpouseName");
+					}
+				} else {
+					clearError("SpouseName");
+				}
+
+				// Spouse Name Validation (Required only if Married)working wala
+				// let spouseName = $("#SpouseName").val().trim();
+				// if (maritalStatus === "Married" && !spouseName) {
+
+				// 	showError("SpouseName", "Spouse Name is required for Married status.");
+				// 	isValid = false;
+				// } else {
+				// 	clearError("SpouseName");
+				// }
+				// Address1 Validation
+				let address1 = $("#Address1").val().trim();
+				if (!address1) {
+					showError("Address1", "Permanent Address is required.");
+					isValid = false;
+				} else {
+					clearError("Address1");
+				}
+
+				// Address2 Validation
+				let address2 = $("#Address2").val().trim();
+				if (!address2) {
+					showError("Address2", "Current Address is required.");
+					isValid = false;
+				} else {
+					clearError("Address2");
+				}
+
+				// Project Validation
+				let project = $("#ProjectId").val();
+				if (!project) {
+					showError("projectError", "Select a project.");
+					isValid = false;
+				} else {
+					clearError("projectError");
+				}
+
+				// Site Validation
+				let site = $("#SiteId").val();
+				if (!site) {
+					showError("siteError", "Select a site.");
+					isValid = false;
+				} else {
+					clearError("siteError");
+				}
+
+				// Qualification Validation
+				let qualification = $("#QualificationId").val();
+				if (!qualification) {
+					showError("qualificationError", "Select a qualification.");
+					isValid = false;
+				} else {
+					clearError("qualificationError");
+				}
+
+				// Mobile Number Validation
+				let mobileNumber = $("#MobileNumber").val();
+				let mobilePattern = /^(?:\+91[\s-]?)?[0-9]{10}$/;  // Allows +91 or space separation and accepts only digits
+				if (!mobileNumber || !mobilePattern.test(mobileNumber)) {
+					showError("MobileNumber", "Enter a valid mobile number (can start with +91 and have 10 digits only).");
+					isValid = false;
+				} else {
+					clearError("MobileNumber");
+				}
+
+				// Alternate Mobile Number Validation (Optional)
+				let mobileNumber2 = $("#MobileNumber2").val();
+				if (mobileNumber2 && !mobilePattern.test(mobileNumber2)) {
+					showError("MobileNumber2", "Alternate number must be a valid mobile number (10 digits only optional, with +91 or spaces).");
+					isValid = false;
+				} else {
+					clearError("MobileNumber2");
+				}
+
+				// If no errors, submit the form
+				if (isValid) {
+
+					// Submit the form
+					this.submit();
+				}
+			});
+		});
+
 	</script>
 }
