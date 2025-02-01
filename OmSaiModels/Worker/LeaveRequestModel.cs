@@ -34,6 +34,7 @@ namespace OmSaiModels.Worker
 		public DateTime? UpdatedAt { get; set; }
 
 	}
+
 	public class LeaveRequestApproveModel
 	{
 		[Key]

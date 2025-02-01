@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using OmSaiServices.Worker.Interfaces;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace GeneralTemplate.Areas.Worker.Controllers
 {
@@ -140,6 +141,43 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 				{
 					var result = await _leaveRequestService.Create(model);
 					return Ok(new ApiResponseModel<object>(true, result, null));
+				}
+				else
+				{
+					var errors = ModelState.ToDictionary(
+							   key => key.Key,
+							   value => value.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+						   );
+
+					return BadRequest(new ApiResponseModel<object>(false, null, errors));
+				}
+			}
+			catch (Exception ex)
+			{
+				var errors = new
+				{
+					Message = new[] { ex.Message },
+				};
+				return BadRequest(new ApiResponseModel<object>(false, null, errors));
+			}
+		}
+
+
+		[HttpDelete]
+		[Route("soft-delete-leave-request/{id}")]
+		public async Task<IActionResult> SoftDeleteLeaveRequest(int id)
+		{
+			try
+			{
+				var leaveRequest = _leaveRequestService.GetById(id);
+				if (leaveRequest == null)
+				{
+
+				}
+				if (ModelState.IsValid)
+				{
+					 _leaveRequestService.Delete(id);
+					return Ok(new ApiResponseModel<object>(true, id, null));
 				}
 				else
 				{

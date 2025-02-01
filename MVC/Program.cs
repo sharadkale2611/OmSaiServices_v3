@@ -1,4 +1,5 @@
 using GeneralTemplate.Filter;
+using GeneralTemplate.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,7 +31,6 @@ builder.Services.AddControllersWithViews(options =>
 {
 	// Add the filter globally
 	options.Filters.Add<SessionInfoFilter>();
-	options.Filters.Add<CustomErrorFilter>();
 });
 
 
@@ -97,6 +97,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
+app.UseSession(); // Enable session middleware
+
+app.UseCustomErrorMiddleware(); // Add this line before other middlewares
 
 
 // Configure the HTTP request pipeline.
@@ -119,10 +122,6 @@ app.UseStaticFiles();
 
 
 app.UseRouting();
-
-// Add session middleware BEFORE endpoints
-app.UseSession();
-
 
 
 app.UseAuthentication(); // Add authentication middleware
