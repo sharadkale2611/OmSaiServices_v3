@@ -419,6 +419,55 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 				if (ModelState.IsValid)
 				{
+						var existingMobileNumbers = _workerMobileNumbersService.GetAll()
+						.Where(m => m.IsDeleted == false && (m.MobileNumber == MobileNumber || m.MobileNumber == MobileNumber2))
+						.ToList();
+
+					if (existingMobileNumbers.Any())
+					{
+						// Check for MobileNumber
+						if (existingMobileNumbers.Any(m => m.MobileNumber == MobileNumber))
+						{
+							TempData["MobileNumbersError"] = "Mobile Number already exists.";
+						}
+
+						// Check for MobileNumber2 (Alternate Mobile Number)
+						if (existingMobileNumbers.Any(m => m.MobileNumber == MobileNumber2))
+						{
+							TempData["MobileNumber2Error"] = "Alternate Mobile Number already exists.";
+						}
+
+						// Pass the entered data back to the view
+						TempData["MobileNumber"] = MobileNumber;
+						TempData["MobileNumber2"] = MobileNumber2;
+						TempData["DepartmentId"] = model.DepartmentId;
+						TempData["FirstName"] = model.FirstName;
+						TempData["MiddleName"] = model.MiddleName;
+						TempData["LastName"] = model.LastName;
+						TempData["DateofBirth"] = model.DateofBirth;
+						TempData["Age"] = model.Age;
+						TempData["Gender"] = model.Gender;
+						TempData["MarritalStatus"] = model.MarritalStatus;
+						TempData["SpouseName"] = model.SpouseName;
+						TempData["DateofJoining"] = model.DateofJoining;
+
+						TempData["Address1"] = Address1;
+						TempData["Address2"] = Address2;
+						TempData["ProjectId"] = ProjectId;
+						TempData["SiteId"] = SiteId;
+						TempData["QualificationId"] = QualificationId;
+
+						ViewBag.Address1 = Address1;
+						ViewBag.Address2 = Address2;
+						ViewBag.PId = ProjectId;
+						ViewBag.SId = SiteId;
+						ViewBag.QId = QualificationId;
+
+						return RedirectToAction(nameof(Create));
+					}
+
+
+
 					TempData["success"] = "Record added successfully!";
 
 					var lastWorkerId = _workerService.Create(model);
@@ -581,6 +630,64 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 				if (ModelState.IsValid)
 				{
+
+					// Check if the mobile number already exists in the WorkerMobileNumbers table (where IsDeleted = 0)
+					// Ignore if the mobile number is repeated with the same WorkerId
+					//var existingMobileNumbers = _workerMobileNumbersService.GetAll()
+					//	.Where(m => m.IsDeleted == false
+					//				&& (m.MobileNumber == MobileNumber || m.MobileNumber == MobileNumber2)
+					//				&& m.WorkerId != model.WorkerId) // Add this condition to ignore the same WorkerId
+					//	.ToList();
+
+					var existingMobileNumbers = _workerMobileNumbersService.GetAll()
+						.Where(m => !m.IsDeleted
+								 && (m.MobileNumber == MobileNumber || m.MobileNumber == MobileNumber2)
+								 && m.WorkerId != model.WorkerId)
+						.ToList();
+
+
+					if (existingMobileNumbers.Any())
+					{
+						// Check for MobileNumber
+						if (existingMobileNumbers.Any(m => m.MobileNumber == MobileNumber))
+						{
+							TempData["MobileNumbersError"] = "Mobile Number already exists.";
+						}
+
+						// Check for MobileNumber2 (Alternate Mobile Number)
+						if (existingMobileNumbers.Any(m => m.MobileNumber == MobileNumber2))
+						{
+							TempData["MobileNumber2Error"] = "Alternate Mobile Number already exists.";
+						}
+
+						// Pass the entered data back to the view
+						TempData["MobileNumber"] = MobileNumber;
+						TempData["MobileNumber2"] = MobileNumber2;
+						TempData["DepartmentId"] = model.DepartmentId;
+						TempData["FirstName"] = model.FirstName;
+						TempData["MiddleName"] = model.MiddleName;
+						TempData["LastName"] = model.LastName;
+						TempData["DateofBirth"] = model.DateofBirth;
+						TempData["Age"] = model.Age;
+						TempData["Gender"] = model.Gender;
+						TempData["MarritalStatus"] = model.MarritalStatus;
+						TempData["SpouseName"] = model.SpouseName;
+						TempData["DateofJoining"] = model.DateofJoining;
+
+						TempData["Address1"] = Address1;
+						TempData["Address2"] = Address2;
+						TempData["ProjectId"] = ProjectId;
+						TempData["SiteId"] = SiteId;
+						TempData["QualificationId"] = QualificationId;
+
+						ViewBag.Address1 = Address1;
+						ViewBag.Address2 = Address2;
+						ViewBag.PId = ProjectId;
+						ViewBag.SId = SiteId;
+						ViewBag.QId = QualificationId;
+
+						return RedirectToAction(nameof(Create));
+					}
 					TempData["success"] = "Record updated successfully!";
 
 					// Update main Worker details

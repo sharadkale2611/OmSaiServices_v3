@@ -244,6 +244,51 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			}
 		}
 
+		[HttpPost]
+		[Route("delete-leave-request/{id}")]
+		public IActionResult DeleteLeaveRequest(int id)
+		{
+			try
+			{
+				var leaveRequest = _leaveRequestService.GetById(id);
+
+				if (leaveRequest == null)
+				{
+					var errors = new
+					{
+						LeaveRequestId = new[] { "Leave Request not found!" }
+					};
+					return BadRequest(new ApiResponseModel<object>(false, null, errors));
+				}
+
+				if (leaveRequest.Status == "Pending")  // Check if the status is 'Pending'
+				{
+					// Proceed with deletion
+					_leaveRequestService.Delete(id);
+					return Ok(new ApiResponseModel<object>(true, new
+					{
+						message = "Leave request deleted successfully!"
+					}, null));
+				}
+				else
+				{
+					// If the leave request status is not 'Pending', return an error
+					var errors = new
+					{
+						Status = new[] { "Cannot delete processed or approved leave request." }
+					};
+					return BadRequest(new ApiResponseModel<object>(false, null, errors));
+				}
+			}
+			catch (Exception ex)
+			{
+				var errors = new
+				{
+					Message = new[] { ex.Message },
+				};
+				return BadRequest(new ApiResponseModel<object>(false, null, errors));
+			}
+		}
 
 	}	
 }

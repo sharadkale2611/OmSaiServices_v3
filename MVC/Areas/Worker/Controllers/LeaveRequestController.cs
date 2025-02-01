@@ -5,10 +5,12 @@ using OmSaiServices.Worker.Implementations;
 using OmSaiServices.Admin.Implementations;
 using OmSaiServices.Worker.Implimentation;
 using System.Security.Claims;
+using GeneralTemplate.Filter;
 
 namespace GeneralTemplate.Areas.Worker.Controllers
 {
 	[Area("Worker")]
+	[EmpAuthorizeFilter]
 	public class LeaveRequestController : Controller
 	{
 		private readonly LeaveRequestService _leaveRequestService;
@@ -22,17 +24,13 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			_workerservice = new WorkerService();
 			_leaveTypeservice = new LeaveTypeService();
 		}
+
 		public IActionResult Index()
 		{
 			// Check Session for WorkerName
 			var workerName = HttpContext.Session.GetString("WorkerName");
 			var workerId = HttpContext.Session.GetInt32("WorkerId");
 
-			if (string.IsNullOrEmpty(workerName))
-			{
-				return RedirectToAction("Login", "WorkerAuthentication", new { area = "Worker" });
-				//return RedirectToAction("ActionName", "ControllerName", new { area = "AreaName" });
-			}
 
 			ViewBag.AllData = _leaveRequestService.GetAll();
 			ViewBag.LeaveType = _leaveTypeservice.GetAll();
