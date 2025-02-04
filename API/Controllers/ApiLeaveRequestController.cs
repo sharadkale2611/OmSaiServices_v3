@@ -1,25 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using OmSaiModels.Common;
 using OmSaiModels.Worker;
-using OmSaiServices.Worker.Implimentation;
 using OmSaiServices.Admin.Implementations;
 using OmSaiServices.Worker.Implementations;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using OmSaiServices.Worker.Interfaces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using OmSaiServices.Worker.Implimentation;
 
-namespace GeneralTemplate.Areas.Worker.Controllers
+namespace API.Controllers
 {
 	[Route("api/worker-leave")]
 	//[ApiController]
-	[Authorize(AuthenticationSchemes = "Jwt")]
+	[Authorize]
 	public class ApiLeaveRequestController : ControllerBase
 	{
 		private readonly LeaveRequestService _leaveRequestService;
@@ -162,6 +154,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			}
 		}
 
+
 		[HttpDelete]
 		[Route("soft-delete-leave-request/{id}")]
 		public async Task<IActionResult> SoftDeleteLeaveRequest(int id)
@@ -175,7 +168,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 				}
 				if (ModelState.IsValid)
 				{
-					 _leaveRequestService.Delete(id);
+					_leaveRequestService.Delete(id);
 					return Ok(new ApiResponseModel<object>(true, id, null));
 				}
 				else
@@ -214,9 +207,9 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 					//	success = true,
 					//	message = "Record updated successfully!"
 					//});
-					return Ok(new ApiResponseModel<object>(true, new 
-					{ 
-						message= "Record updated successfully!" 
+					return Ok(new ApiResponseModel<object>(true, new
+					{
+						message = "Record updated successfully!"
 					}, null));
 				}
 				else
@@ -289,5 +282,5 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			}
 		}
 
-	}	
+	}
 }

@@ -18,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(DBCo
 builder.Services.AddControllersWithViews();
 
 
+
+
 builder.Services.AddAuthorization(options =>
 {
 	options.FallbackPolicy = null; // Allow unauthenticated access by default
@@ -33,6 +35,7 @@ builder.Services.AddControllersWithViews(options =>
 	options.Filters.Add<SessionInfoFilter>();
 	
 });
+
 
 
 // Add JWT Authentication
