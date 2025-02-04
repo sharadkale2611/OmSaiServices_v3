@@ -41,7 +41,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Create(LeaveRequestModel model)
 		{			
 			try
@@ -79,7 +79,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Approve(int LeaveRequestId, string Remark, string Status)   //LeaveRequestApproveModel model
 		{
 			// Get the logged-in user's ID
@@ -99,7 +99,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Edit(LeaveRequestModel model)
 		{
 			try
@@ -133,7 +133,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Delete(int id)
 		{
 			_leaveRequestService.Delete(id);
@@ -143,7 +143,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 		//[HttpPost]
-		//[ValidateAntiForgeryToken]
+		//
 		//public IActionResult Approve(LeaveRequestModel model)
 		//{
 		//	ViewBag.AllData = _leaveRequestService.GetAll();

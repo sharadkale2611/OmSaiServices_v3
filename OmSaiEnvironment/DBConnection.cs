@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OmSaiEnvironment
 {
-	public class DBConnection
+	public class DBConnection	
 	{
 		//LocalConnection
 		//public static string DefaultConnection = "Server=BOTMASTER-SRD\\MSSQLEXPRESS;Database=om_sai_services_db_v1;User Id=sa;Password=pass@1234;TrustServerCertificate=True";

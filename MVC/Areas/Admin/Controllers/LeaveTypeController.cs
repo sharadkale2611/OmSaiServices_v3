@@ -22,7 +22,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Create(LeaveTypeModel model)
 		{
 			//var result =  _leaveTypeService.Create(model);			
@@ -58,7 +58,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 			}
 		}
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 
 		public IActionResult Edit(LeaveTypeModel model)
 		{
@@ -92,7 +92,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 
 		public IActionResult Delete(int id)
 		{

@@ -25,7 +25,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public IActionResult Create(WorkerMobileNumbersModel model)
         {
             try
@@ -65,7 +65,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Edit(WorkerMobileNumbersModel model)
         {
             try

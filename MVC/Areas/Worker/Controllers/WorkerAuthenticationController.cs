@@ -101,7 +101,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 		[HttpPost("ChangePassword")]
 		[WorkerAuthorizeFilter]
-		//[ValidateAntiForgeryToken]
+		//
 		public IActionResult ChangePassword(WorkerChangePasswordModel model)
 		{
 			var workerId = HttpContext.Session.GetInt32("WorkerId");
@@ -179,7 +179,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 		[HttpPost("LeaveRequest")]
-		[ValidateAntiForgeryToken]
+		
 		[WorkerAuthorizeFilter]
 		public IActionResult LeaveRequest(LeaveRequestModel model)
 		{
@@ -224,7 +224,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 		[HttpPost("LeaveRequestEdit")]
-		[ValidateAntiForgeryToken]
+		
 		[WorkerAuthorizeFilter]
 		public IActionResult LeaveRequestEdit(LeaveRequestModel model)
 		{
@@ -260,7 +260,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
 		[HttpPost("LeaveRequestDelete")]
-		[ValidateAntiForgeryToken]
+		
 		[WorkerAuthorizeFilter]
 		public IActionResult LeaveRequestDelete(int id)
 		{
@@ -272,7 +272,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
 		[HttpPost("Create")]
-		[ValidateAntiForgeryToken]
+		
 		[WorkerAuthorizeFilter]
 		public IActionResult Create(LeaveRequestModel model)
 		{

@@ -28,7 +28,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
             }
 
             [HttpPost]
-            [ValidateAntiForgeryToken]
+            
             public ActionResult Create(QualificationModel model)
             {
                 try
@@ -64,7 +64,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
           
             [HttpPost]
-            [ValidateAntiForgeryToken]
+            
             public ActionResult Edit(QualificationModel model)
             {
                 try

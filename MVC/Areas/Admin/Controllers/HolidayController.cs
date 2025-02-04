@@ -27,7 +27,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Create(HolidayModel model)
         {
             try
@@ -63,7 +63,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Edit(HolidayModel model)
         {
             try

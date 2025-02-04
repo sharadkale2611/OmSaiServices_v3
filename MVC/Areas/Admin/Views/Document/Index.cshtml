@@ -136,7 +136,7 @@
             <div class="col-lg-4 col-md-4 col-sm-12" id="rightCard" style="display:none;">
                 <div class="card card-warning card-outline mb-4 ">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <form id="DocumentForm" method="post" asp-area="admin" asp-controller="Document" asp-action="Create" asp-antiforgery="true">
+                    <form id="DocumentForm" method="post" asp-area="admin" asp-controller="Document" asp-action="Create"  >
                         <input type="hidden" asp-for="DocumentId" id="DocumentId" />
                         <div class="card-body">
                             <div class="mb-3">

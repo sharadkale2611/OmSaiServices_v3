@@ -28,7 +28,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 		}
 		
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Create(AssetModel model)
 		{
 			//var result =  _assetService.Create(model);			
@@ -64,7 +64,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 			}
 		}
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 
 		public IActionResult Edit(AssetModel model)
 		{
@@ -98,7 +98,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 
 		public IActionResult Delete(int id)
 		{

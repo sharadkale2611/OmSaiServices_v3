@@ -158,7 +158,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 		// POST: User/Edit/{id}
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> Edit(EditUserViewModel model)
 		{
 			if (!ModelState.IsValid)
@@ -262,7 +262,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 		// POST: User/AssignRole/{userId}
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> AssignRole(string userId, string role)
 		{
 			// Retrieve the user from the AspNetUsers table

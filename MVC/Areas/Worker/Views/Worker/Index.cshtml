@@ -210,6 +210,22 @@
     <script>
         $(document).ready(function() {
             $('#tableSites').DataTable();
+
+            setInterval(function () {
+                var baseUrl = window.location.origin; // Dynamically get the base URL
+
+                $.ajax({
+                    url: baseUrl + '/api/ApiWorkerAuth/test', // Use dynamic base URL
+                    method: 'GET',
+                    success: function (response) {
+                        console.log("Session refreshed at: " + new Date().toLocaleTimeString());
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Session refresh failed: " + error);
+                    }
+                });
+            }, 60 * 1000); // Every 1 minute (adjust as needed)
+
         });
     </script>
 

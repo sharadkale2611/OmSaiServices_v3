@@ -36,7 +36,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Create(WorkerProjectSiteModel model)
         {
             try
@@ -67,7 +67,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Edit(WorkerProjectSiteModel model)
         {
             try

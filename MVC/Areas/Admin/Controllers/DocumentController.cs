@@ -22,7 +22,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public IActionResult Create(DocumentModel model)
         {
             try
@@ -55,7 +55,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
             }
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Edit(DocumentModel model)
         {
             try
@@ -88,7 +88,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Delete(int id)
         {
 			//try

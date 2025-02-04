@@ -31,7 +31,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 		// POST: Role/Create
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> Create(Role model)
 		{
 			try
@@ -80,7 +80,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 		// POST: Role/Edit/{id}
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> Edit(Role model)
 		{
 			try
@@ -128,7 +128,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 
 		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
+		
 		public async Task<IActionResult> DeleteConfirmed(string id)
 		{
 			// Find the role by id

@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OmSaiServices.Worker.Implementations
 {
@@ -201,12 +202,17 @@ namespace OmSaiServices.Worker.Implementations
 
 
 		//TO GET WORKER MANUAL ATTENDANCE
-		public List<WorkerAttendanceDetailsViewModel> GetWorkerAttendanceDetails()
+		public List<WorkerAttendanceDetailsViewModel> GetWorkerAttendanceDetails(int? SiteId = null)
 		{
 			var mapEntity = new Func<IDataReader, WorkerAttendanceDetailsViewModel>(reader => _mapper.MapEntity<WorkerAttendanceDetailsViewModel>(reader));
 
+		
+			var parameters = new[]
+			   {
+					new SqlParameter("@SiteId", SiteId ?? (object)DBNull.Value)
+				};
 			// Execute stored procedure and return results
-			return QueryService.Query("usp_GetWorkerAttendanceDetails", mapEntity);
+			return QueryService.Query("usp_GetWorkerAttendanceDetails", mapEntity, parameters);
 		}
 
 		// Method to create or update worker attendance

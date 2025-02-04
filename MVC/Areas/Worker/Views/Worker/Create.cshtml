@@ -23,7 +23,7 @@
 						<h4 style="padding:5px 7px "><b>Add Worker Details</b></h4>
 					</div>
 
-					<form id="workerForm" method="post" asp-area="Worker" asp-controller="Worker" asp-action="Create" asp-antiforgery="true">
+					<form id="workerForm" method="post" asp-area="Worker" asp-controller="Worker" asp-action="Create"  >
 
 						<input type="hidden" asp-for="WorkerId" id="WorkerId" />
 
@@ -167,7 +167,7 @@
 										<option value="" selected>Select Option</option>
 										@foreach (var site in ViewBag.Sites)
 										{
-											<option value="@site.SiteId">@site.SiteName</option>
+											<option value="@site.SiteId" data-project-id="@site.ProjectId" style="display:none;">@site.SiteName</option>
 										}
 									</select>
 									<span id="siteError" class="text-danger error-message"></span>
@@ -494,6 +494,56 @@
 				}
 			});
 		});
+
+
+		$(document).ready(function () {
+			var $siteDropdown = $('#SiteId');
+
+			$('#ProjectId').change(function () {
+				var selectedProjectId = $(this).val(); // Get the selected ProjectId
+				let matched = 0;
+				let nmatched = 0;
+				if (selectedProjectId) {
+					console.log('Filtering sites for Project ID:', selectedProjectId);
+
+					// Filter and show only sites that belong to the selected project
+					$siteDropdown.find('option').each(function () {
+						var siteProjectId = $(this).data('project-id'); // Get the data-project-id attribute
+						if (siteProjectId == selectedProjectId) {
+							console.log('Matched Count:', ++matched);
+							$(this).show();
+						}
+						else{
+							console.log('N-Matched Count:', ++nmatched);
+							$(this).hide();
+						}
+					});
+				}
+			});
+
+			// Trigger the change event on page load if ProjectId is already selected
+			$('#ProjectId').trigger('change');
+
+
+			setInterval(function () {
+				var baseUrl = window.location.origin; // Dynamically get the base URL
+
+				$.ajax({
+					url: baseUrl + '/api/ApiWorkerAuth/test', // Use dynamic base URL
+					method: 'GET',
+					success: function (response) {
+						console.log("Session refreshed at: " + new Date().toLocaleTimeString());
+					},
+					error: function (xhr, status, error) {
+						console.error("Session refresh failed: " + error);
+					}
+				});
+			}, 60 * 1000); // Every 1 minute (adjust as needed)
+
+
+		});
+
+
 
 
 	</script>

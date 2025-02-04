@@ -31,7 +31,7 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/">Master</a></li>
                     <li class="breadcrumb-item"><a asp-area="admin" asp-controller="Project" asp-action="Index">Projects</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
                         Sites
@@ -72,7 +72,7 @@
                                     serialNumber++;
                                     <tr class="align-middle">
                                         <td>@serialNumber</td>
-                                         @* <td>@item.ProjectId</td>  *@
+                                        @* <td>@item.ProjectId</td>  *@
                                         <td>@item.ProjectName</td>
                                         <td>@item.SiteName</td>
                                         <td>@item.SiteLocation</td>
@@ -88,7 +88,7 @@
                                                 <span class="status-icon bg-danger"></span> <span>Inactive</span>
                                             }
                                         </td>
- 
+
 
                                         <td>
                                             <nav class="nav justify-content-center flex-nowrap">
@@ -125,10 +125,10 @@
             <div class="col-lg-4 col-md-4 col-sm-12" id="rightCard" style="display:none;">
                 <div class="card card-warning card-outline mb-4 ">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <form id="SiteForm" method="post" asp-area="admin" asp-controller="Site" asp-action="Create" asp-antiforgery="true">
+                    <form id="SiteForm" method="post" asp-area="admin" asp-controller="Site" asp-action="Create" >
                         <input type="hidden" asp-for="SiteId" id="SiteId" />
                         <div class="card-body">
-                             <div class="mb-3">
+                            <div class="mb-3">
                                 <label asp-for="ProjectId" class="col-form-label">Project Name</label>
                                 <select asp-for="ProjectId" class="form-control" required>
                                     <option value="" selected>Select Project</option>
@@ -137,8 +137,8 @@
                                         <option value="@project.ProjectId">@project.ProjectName</option>
                                     }
                                 </select>
-                            </div> 
-                           @*  <div class="mb-3">
+                            </div>
+                            @*  <div class="mb-3">
                                 <label asp-for="ProjectName" class="col-form-label">Project Name</label>
                                 <input type="text" class="form-control" asp-for="ProjectName" placeholder="Project Id" required>
                             </div> *@
@@ -153,8 +153,20 @@
                             </div>
                             <div class="mb-3">
                                 <label asp-for="GpsLocation" class="col-form-label">Gps Location</label>
-                                <span class="badge bg-info mt-3 nav-link py-1" onclick="getGeoLocation()" style="float:right;">Get Current Location</span>
-                                <input type="text" class="form-control" asp-for="GpsLocation" placeholder="Gps Location" required>
+                                @* <span class="badge bg-info mt-3 nav-link py-1" onclick="getGeoLocation()" style="float:right;">Get Current Location</span> *@
+                                @*                                 <input type="text" class="form-control" asp-for="GpsLocation" placeholder="Gps Location" required>
+ *@
+                                @* <input type="text" class="form-control" asp-for="GpsLocation" *@
+                                @*        id="GpsLocation" placeholder="Gps Location" *@
+                                       
+                                @*        onclick="validateGPS(this)"  required> *@
+                                <input type="text" class="form-control" asp-for="GpsLocation"
+                                       id="GpsLocation" placeholder="Gps Location"
+                                       oninput="validateGPS(this)" 
+                                       required>
+
+                                <p id="error" style="color: red;"></p>
+
                             </div>
 
                             <div class="form-check mt-2">
@@ -183,7 +195,57 @@
 @section Scripts {
     <script>
 
-        $('#btnShowForm').click(() => {
+        function validateGPS(input) {
+               const errorElement = document.getElementById("error");
+               const value = input.value.trim();
+
+               // Split by comma
+               const parts = value.split(",");
+               if (parts.length !== 2) {
+                   errorElement.textContent = "Invalid format. Use 'latitude, longitude'.";
+                   input.setCustomValidity("Invalid format. Use 'latitude, longitude'.");
+                   return;
+               }
+
+               // Trim spaces
+               let lat = parts[0].trim();
+               let lon = parts[1].trim();
+
+               // Convert to numbers
+               lat = parseFloat(lat);
+               lon = parseFloat(lon);
+
+               // Check if both are valid numbers
+               if (isNaN(lat) || isNaN(lon)) {
+                   errorElement.textContent = "Latitude and longitude must be valid numbers.";
+                   input.setCustomValidity("Latitude and longitude must be valid numbers.");
+                   return;
+               }
+
+               // Check valid range
+               if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+                   errorElement.textContent = "Latitude must be between -90 and 90, and longitude between -180 and 180.";
+                   input.setCustomValidity("Latitude must be between -90 and 90, and longitude between -180 and 180.");
+                   return;
+               }
+
+               // If valid, clear errors
+               errorElement.textContent = "";
+               input.setCustomValidity("");  // Reset custom validity
+           }
+
+
+        // Validate on form submit
+          document.getElementById("SiteForm").addEventListener("submit", function(event) {
+              const gpsInput = document.getElementById("GpsLocation");
+              validateGPS(gpsInput);  // Validate on form submit
+              if (!gpsInput.checkValidity()) {
+                  event.preventDefault(); // Prevent form submission if invalid
+              }
+          });
+               
+
+            $('#btnShowForm').click(() => {
             $('#leftCard').removeClass("col-lg-12 col-md-12").addClass("col-lg-8 col-md-8");
             $('#rightCard').fadeIn();
             $('#btnShowForm').fadeOut();
@@ -194,7 +256,7 @@
             $('#SiteName').val("");
             $('#SiteLocation').val("");
             $('#GpsLocation').val("");
-            
+
 
             $('#SiteForm').attr('action', '/admin/Site/Create');
         });
@@ -259,7 +321,7 @@
                                  // `;
 
                                 $('#GpsLocation').val(latitude+', '+longitude);
-                                 
+
 
                              },
                              function (error) {

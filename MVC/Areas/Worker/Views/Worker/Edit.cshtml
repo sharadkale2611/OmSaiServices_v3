@@ -52,7 +52,7 @@
 					<div class="card-header">
 						<h4 style="padding:5px 7px "><b>Update form</b></h4>
 					</div>
-					<form id="workerForm" method="post" asp-area="Worker" asp-controller="Worker" asp-action="Edit" asp-antiforgery="true">
+					<form id="workerForm" method="post" asp-area="Worker" asp-controller="Worker" asp-action="Edit"  >
 						<input type="hidden" asp-for="WorkerId" id="WorkerId" />
 						<div class="card-body">
 
@@ -189,7 +189,7 @@
 										<option value="">Select Option</option>
 										@foreach (var site in ViewBag.Sites)
 										{
-											<option value="@site.SiteId">@site.SiteName</option>
+											<option value="@site.SiteId" data-project-id="@site.ProjectId" style="display:none;">@site.SiteName</option>
 										}
 									</select>
 									<input type="hidden" id="SiteIdTemp" value="@Worker.SiteId" />
@@ -538,6 +538,37 @@
 				}
 			});
 		});
+
+
+		$(document).ready(function () {
+			var $siteDropdown = $('#SiteId');
+
+			$('#ProjectId').change(function () {
+				var selectedProjectId = $(this).val(); // Get the selected ProjectId
+				let matched = 0;
+				let nmatched = 0;
+				if (selectedProjectId) {
+					console.log('Filtering sites for Project ID:', selectedProjectId);
+
+					// Filter and show only sites that belong to the selected project
+					$siteDropdown.find('option').each(function () {
+						var siteProjectId = $(this).data('project-id'); // Get the data-project-id attribute
+						if (siteProjectId == selectedProjectId) {
+							console.log('Matched Count:', ++matched);
+							$(this).show();
+						}
+						else{
+							console.log('N-Matched Count:', ++nmatched);
+							$(this).hide();
+						}
+					});
+				}
+			});
+
+			// Trigger the change event on page load if ProjectId is already selected
+			$('#ProjectId').trigger('change');
+		});
+
 
 	</script>
 }

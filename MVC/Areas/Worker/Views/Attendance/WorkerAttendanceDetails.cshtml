@@ -3,55 +3,146 @@
 @{
     ViewData["Title"] = "Worker Attendance Details";
     var currentDate = DateTime.Now.ToString("dd MMM yyyy");
+    int serialNumber = 1;
+
 }
 
-<h2>Date: @currentDate</h2>
+
+
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="page-title">
+                    Manual Worker Attednace
+                </h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Manual Worker Attednace
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header--> <!--begin::App Content-->
+
+
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <partial name="~/Views/shared/_alertpartial.cshtml" />
+
+
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12" id="leftCard">
+
+                <div class="card p-4">
+                    <form method="GET" action="WorkerAttendanceDetails" class="d-flex">
+                        <!-- Dropdown -->
+                        <div class="me-2">
+                            <select class="form-control" id="drpSites" name="id">
+                                @if (ViewBag.Id == 0)
+                                {
+                                    <option value="0" selected>Select Site</option>
+                                }
+                                else
+                                {
+                                    <option value="0">Select Site</option>
+                                }
+
+                                @foreach (var siteWorker in ViewBag.SiteWorkerData)
+                                {
+                                    if (ViewBag.Id == siteWorker.SiteId)
+                                    {
+                                        <option value="@siteWorker.SiteId" selected>@siteWorker.SiteName</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@siteWorker.SiteId">@siteWorker.SiteName</option>
+                                    }
+
+                                }
+                            </select>
+                        </div>
+                        <!-- Search Button -->
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+
+                                         
+                </div>
+
+                <div class="card">
+
+
+                    <div class="p-1">
+
+                        <table class="table  card-table table-vcenter text-nowrap table-hover hover-pointer">
+                            <thead>
+                                <tr>
+                                    <th>Sr.No</th>
+                                    <th>Worker Name</th>
+                                    <th>Site Name (Start Time to End Time)</th>
+                                    <th>In-Time</th>
+                                    <th>Out-Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    serialNumber = 0;
+                                    foreach (var item in Model)
+                                    {
+                                        serialNumber++;
+                                        <tr>
+                                            <td>@serialNumber</td>
+                                            <td>@item.WorkerName</td>
+                                            <td>
+                                                @item.SiteName
+                                                (@(item.StartTime.HasValue ? DateTime.Today.Add(item.StartTime.Value).ToString("hh:mm tt") : "-")
+                                                To @(item.EndTime.HasValue ? DateTime.Today.Add(item.EndTime.Value).ToString("hh:mm tt") : "-"))
+                                            </td>
+                                            <td>@(item.InTime?.ToString("hh:mm tt") ?? "-")</td>
+                                            <td>@(item.OutTime?.ToString("hh:mm tt") ?? "-")</td>
+                                            <td>@(item.Status ?? "-")</td>
+                                            <td>
+                                                <button class="btn btn-primary" onclick="btnShowNewWorkerForm('@item.WorkerId', '@item.WorkerName')">Attendance</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center">No records available.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@* <h2>Date: @currentDate</h2> *@
 
 <!-- Table displaying worker attendance -->
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Sr.No</th>
-            <th>Worker Name</th>
-            <th>Site Name (Start Time to End Time)</th>
-            <th>In-Time</th>
-            <th>Out-Time</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            int serialNumber = 0;
-            foreach (var item in Model)
-            {
-                serialNumber++;
-                <tr>
-                    <td>@serialNumber</td>
-                    <td>@item.WorkerName</td>
-                    <td>
-                        @item.SiteName
-                        (@(item.StartTime.HasValue ? DateTime.Today.Add(item.StartTime.Value).ToString("hh:mm tt") : "-")
-                        To @(item.EndTime.HasValue ? DateTime.Today.Add(item.EndTime.Value).ToString("hh:mm tt") : "-"))
-                    </td>
-                    <td>@(item.InTime?.ToString("hh:mm tt") ?? "-")</td>
-                    <td>@(item.OutTime?.ToString("hh:mm tt") ?? "-")</td>
-                    <td>@(item.Status ?? "-")</td>
-                    <td>
-                        <button class="btn btn-primary" onclick="btnShowNewWorkerForm('@item.WorkerId', '@item.WorkerName')">Attendance</button>
-                    </td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="7" class="text-center">No records available.</td>
-            </tr>
-        }
-    </tbody>
-</table>
 
 <!-- Modal for Adding/Updating Attendance -->
 <div class="modal fade" id="newWorkerModal" tabindex="-1" aria-labelledby="newWorkerModalLabel" aria-hidden="true">
@@ -128,5 +219,7 @@
                 alert('Failed to save attendance!');
             });
         });
+
+
     </script>
 }

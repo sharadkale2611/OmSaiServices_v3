@@ -28,7 +28,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Create(ProjectModel model)
 		{
 			try
@@ -72,7 +72,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Edit(ProjectModel model)
 		{
 
@@ -109,7 +109,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Delete(int id)
 		{
 			_projectService.Delete(id);

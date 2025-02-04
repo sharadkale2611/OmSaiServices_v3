@@ -107,7 +107,7 @@
             <div class="col-lg-4 col-md-4 col-sm-12" id="rightCard" style="display:none;">
                 <div class="card card-warning card-outline mb-4 ">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <form id="RoleForm" method="post" asp-area="admin" asp-controller="Role" asp-action="Create" asp-antiforgery="true">
+                    <form id="RoleForm" method="post" asp-area="admin" asp-controller="Role" asp-action="Create"  >
                         <input type="hidden" asp-for="Id" id="RoleId" />
                         <div class="card-body">
                             <div class="mb-3">

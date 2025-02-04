@@ -7,10 +7,12 @@ using LmsServices.Common;
 using Microsoft.AspNetCore.Http;
 using OmSaiServices.Admin.Interfaces;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using GeneralTemplate.Filter;
 
 namespace GeneralTemplate.Areas.Worker.Controllers
 {
 	[Area("Worker")]
+	[EmpAuthorizeFilter]
 	public class AttendanceController : Controller
 	{
 		private readonly WorkerService _workerService;
@@ -35,6 +37,8 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 		public IActionResult Index()
 		{
+
+
 			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
 			{
 				Year = DateTime.Now.Year
@@ -370,9 +374,11 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
 		// GET: Attendance/WorkerAttendanceDetails
-		public IActionResult WorkerAttendanceDetails()
+		public IActionResult WorkerAttendanceDetails(int id=0)
 		{
-			var attendanceDetails = _attendanceService.GetWorkerAttendanceDetails();
+			ViewBag.Id = id;
+			ViewBag.SiteWorkerData = _dashboardService.GetSiteWorkerData(); ;
+			var attendanceDetails = _attendanceService.GetWorkerAttendanceDetails(id);
 			return View(attendanceDetails);
 		}
 

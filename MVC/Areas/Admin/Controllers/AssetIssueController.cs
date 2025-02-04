@@ -38,7 +38,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public IActionResult Create(AssetsIssuesModel model)
         {
             try
@@ -72,7 +72,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Edit(AssetsIssuesModel model)
         {
             try
@@ -148,7 +148,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
     //		return View();
     //	}
     //	[HttpPost]
-    //	[ValidateAntiForgeryToken]
+    //	
     //	public IActionResult Create(AssetsIssuesModel model)
     //	{
     //		try
@@ -181,7 +181,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
     //		}
     //	}
     //	[HttpPost]
-    //	[ValidateAntiForgeryToken]
+    //	
     //	public ActionResult Edit(AssetsIssuesModel model)
     //	{
     //		try
@@ -214,7 +214,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
     //	}
 
     //	[HttpPost]
-    //	[ValidateAntiForgeryToken]
+    //	
     //	public ActionResult Delete(int id)
     //	{
     //		//try

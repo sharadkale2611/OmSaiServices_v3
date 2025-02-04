@@ -42,7 +42,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Create(SiteModel model)
         {
             try
@@ -82,7 +82,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Edit(SiteModel model)
         {
             try

@@ -410,7 +410,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 		[HttpPost]
-		//[ValidateAntiForgeryToken]
+		//
 		public IActionResult Create(WorkerModel model, int ProjectId, int SiteId, int QualificationId, string MobileNumber, bool Status, string? MobileNumber2="", string? Address1="", string? Address2="")
 		{
 			try
@@ -595,7 +595,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Edit([FromForm] WorkerModel model, int ProjectId, int SiteId, int QualificationId, string MobileNumber, bool Status,  int WorkerMobileNumberId1,  int WorkerMobileNumberId2,  int WorkerAddressId1,  int WorkerAddressId2, string? MobileNumber2 = "", string? Address1 = "", string? Address2 = "")
 		{
 			// Remove parameters you don't want validated
@@ -787,7 +787,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public IActionResult Delete(int id)
 		{
 			_workerService.Delete(id);
@@ -799,7 +799,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 
 		[HttpPost]
-		//[ValidateAntiForgeryToken]
+		//
 		public IActionResult WorkerChangePassword(WorkerChangePasswordModel model)
 		{
 			ViewBag.IsChangePasswordPage = true;

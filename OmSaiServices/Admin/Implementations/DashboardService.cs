@@ -139,7 +139,7 @@ namespace OmSaiServices.Admin.Implementations
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    using (var reader = cmd.ExecuteReader())
+					using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
@@ -148,7 +148,7 @@ namespace OmSaiServices.Admin.Implementations
 								SiteId = Convert.ToInt32(reader["SiteId"]),
 								SiteName = reader["SiteName"].ToString(),
 								WorkerCount = Convert.ToInt32(reader["WorkerCount"])
-                            };
+                            };  
                             siteWorkerData.Add(item);
                         }
                     }

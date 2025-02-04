@@ -23,14 +23,15 @@ builder.Services.AddAuthorization(options =>
 	options.FallbackPolicy = null; // Allow unauthenticated access by default
 });
 
-
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services.AddControllersWithViews(options =>
 {
 	// Add the filter globally
+	options.Filters.Add<CustomErrorFilter>();
 	options.Filters.Add<SessionInfoFilter>();
+	
 });
 
 

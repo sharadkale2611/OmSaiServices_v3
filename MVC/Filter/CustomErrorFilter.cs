@@ -30,8 +30,13 @@ namespace GeneralTemplate.Filter
 			//ViewData["Error"] = "Oops! Something went wrong.\r\nWe're experiencing an issue while processing your request. Our team is already working on it. Please try again later, and we appreciate your patience.";
 
 
-			if (context.HttpContext.Response.StatusCode == 400 || context.HttpContext.Response.StatusCode == 401)
+			if (context.HttpContext.Response.StatusCode == 400 || context.HttpContext.Response.StatusCode == 401 || context.HttpContext.Response.StatusCode == 403)
 			{
+				// Ensure session is available before clearing
+				if (context.HttpContext.Session != null)
+				{
+					context.HttpContext.Session.Clear();
+				}
 				context.Result = new RedirectToActionResult("Login", "Account", null); // Adjust to your login controller/action
 				context.ExceptionHandled = true;
 			}

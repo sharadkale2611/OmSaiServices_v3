@@ -32,7 +32,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public ActionResult Create(SiteShiftModel model)
 		{
 			try
@@ -72,7 +72,7 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 		}
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
+		
 		public ActionResult Edit(SiteShiftModel model)
 		{
 			try

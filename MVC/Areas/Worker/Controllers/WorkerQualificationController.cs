@@ -37,7 +37,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
         
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public IActionResult Create(WorkerQualificationModel model)
         {
             try
@@ -63,7 +63,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
         
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Edit(WorkerQualificationModel model)
         {
             try
@@ -97,7 +97,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
        
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public ActionResult Delete(int id)
         {
             try
