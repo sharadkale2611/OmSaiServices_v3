@@ -27,6 +27,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	};
 });
 
+
+// Register CORS service
+builder.Services.AddCors(options =>
+{
+	//options.AddPolicy("AllowMyApp", policy =>
+	//{
+	//	policy.WithOrigins("http://localhost:3000", "file://").AllowAnyMethod().AllowAnyHeader();
+	//});
+
+	options.AddPolicy("AllowAllOrigins", policy =>
+	{
+		policy.AllowAnyOrigin()      // Allows all origins
+			  .AllowAnyMethod()     // Allows all HTTP methods (GET, POST, etc.)
+			  .AllowAnyHeader();    // Allows all headers
+	});
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,6 +52,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Configure the HTTP request pipeline.
+app.UseCors("AllowAllOrigins");  // Use the CORS policy
+
 
 app.UseHttpsRedirection();
 

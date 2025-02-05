@@ -510,11 +510,11 @@
 					$siteDropdown.find('option').each(function () {
 						var siteProjectId = $(this).data('project-id'); // Get the data-project-id attribute
 						if (siteProjectId == selectedProjectId) {
-							console.log('Matched Count:', ++matched);
+							// console.log('Matched Count:', ++matched);
 							$(this).show();
 						}
 						else{
-							console.log('N-Matched Count:', ++nmatched);
+							// console.log('N-Matched Count:', ++nmatched);
 							$(this).hide();
 						}
 					});

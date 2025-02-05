@@ -24,6 +24,14 @@ namespace API.Controllers
 
 		}
 
+		[HttpGet("test")]
+		public IActionResult GetTestInfo()
+		{
+			return Ok(new { message = "This is Test API" });
+		}
+
+
+
 		[HttpPost("login")]
 		public async Task<IActionResult> Login([FromBody] WorkerLoginModel model)
 		{
@@ -71,9 +79,8 @@ namespace API.Controllers
 
 
 		[HttpPost("change-password")]
-		public async Task<IActionResult> ChangePassword(WorkerChangePasswordModel model)
+		public async Task<IActionResult> ChangePassword([FromBody] WorkerChangePasswordModel model)
 		{
-
 			try
 			{
 				// Validate the input data
@@ -112,12 +119,6 @@ namespace API.Controllers
 				};
 				return BadRequest(new ApiResponseModel<object>(false, null, errors));
 			}
-		}
-
-		[HttpGet("test")]
-		public IActionResult GetTestInfo()
-		{
-			return Ok(new { message = "This is Test API" });
 		}
 
 		public string GenerateToken(int workerId, string workmanId, string firstName, string lastName)

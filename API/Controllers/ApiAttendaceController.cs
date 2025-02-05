@@ -1,10 +1,12 @@
 ﻿using LmsServices.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OmSaiEnvironment;
 using OmSaiModels.Common;
 using OmSaiModels.Worker;
 using OmSaiServices.Worker.Implementations;
 using OmSaiServices.Worker.Implimentation;
+using SixLabors.ImageSharp;
 
 namespace API.Controllers
 {
@@ -117,19 +119,57 @@ namespace API.Controllers
 
 				try
 				{
-					var uploadPath = "selfies"; // Define your folder path
-					var maxFileSizeKb = 30; // 30KB size limit
-					var quality = 20;
-					var filePath = await _mms.SaveAndCompressImageAsync(SelfieImage, uploadPath, maxFileSizeKb, quality);
-
-					// Set the selfie path in the model
-					model.SelfieImage = filePath;
-
-					// Call the service to manage attendance
-					_attendanceService.ManageAttendance(model);
+					// Image compression
+					// var uploadPath = "selfies"; // Define your folder path
+					// var maxFileSizeKb = 30; // 30KB size limit
+					// var quality = 20;
+					// var filePath = await _mms.SaveAndCompressImageAsync(SelfieImage, uploadPath, maxFileSizeKb, quality);
 
 
-					//return Ok(new { FilePath = filePath, Message = "Image uploaded successfully." });
+					var uploadUrl = $"{Urls.mvcURL}/api/external/upload-file"; // MVC endpoint to handle file saving
+
+					using (var content = new MultipartFormDataContent())
+					{
+
+						var streamContent = new StreamContent(SelfieImage.OpenReadStream());
+						content.Add(streamContent, "file", SelfieImage.FileName);
+
+						// Add the path as StringContent
+						var pathContent = new StringContent("/selfies");
+						content.Add(pathContent, "path");
+
+						using (var client = new HttpClient())
+						{
+							var response = await client.PostAsync(uploadUrl, content);
+							if (response.IsSuccessStatusCode)
+							{
+
+								string selfieImage = await response.Content.ReadAsStringAsync();
+
+								model.SelfieImage = selfieImage;
+
+								_attendanceService.ManageAttendance(model);
+
+								return Ok(new ApiResponseModel<object>(true, new
+								{
+									message = "Attendance processed successfully!",
+									filePath = selfieImage
+								}, null));
+							}
+							else
+							{
+								var errors = new
+								{
+									message = $"An error occurred: {await response.Content.ReadAsStringAsync()}"
+								};
+
+								return BadRequest(new ApiResponseModel<object>(false, null, errors));
+							}
+						}
+
+
+					}
+
 				}
 				catch (Exception ex)
 				{
@@ -140,11 +180,6 @@ namespace API.Controllers
 					};
 					return Unauthorized(new ApiResponseModel<object>(false, null, errors));
 				}
-
-				return Ok(new ApiResponseModel<object>(true, new
-				{
-					message = "Attendance processed successfully."
-				}, null));
 
 			}
 			catch (Exception ex)

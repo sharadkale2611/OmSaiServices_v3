@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OmSaiEnvironment;
 using OmSaiModels.Common;
 using OmSaiModels.Worker;
 using OmSaiServices.Worker.Implementations;
 using OmSaiServices.Worker.Implimentation;
+using System.IO;
 
 namespace API.Controllers
 {
@@ -88,7 +90,7 @@ namespace API.Controllers
 
 		[HttpPost("upload-profile-image")]
 		[Authorize]
-		public IActionResult UploadProfileImage([FromForm] IFormFile? file, [FromForm] int workerId, [FromForm] string? profileImage = "")
+		public async Task<IActionResult> UploadProfileImage([FromForm] IFormFile? file, [FromForm] int workerId, [FromForm] string? profileImage = "")
 		{
 			string uploadPath = "media/profile_images";
 
@@ -115,42 +117,55 @@ namespace API.Controllers
 
 				if (file != null && file.Length > 0)
 				{
-					var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", uploadPath);
+					var uploadUrl = $"{Urls.mvcURL}/api/external/upload-file"; // MVC endpoint to handle file saving
 
-					if (!Directory.Exists(filePath))
-						Directory.CreateDirectory(filePath);
-
-					var uniqueFileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-					var completeFilePath = Path.Combine(filePath, uniqueFileName);
-
-					using (var stream = new FileStream(completeFilePath, FileMode.Create))
+					using (var content = new MultipartFormDataContent())
 					{
-						file.CopyTo(stream);
+						var streamContent = new StreamContent(file.OpenReadStream());
+						content.Add(streamContent, "file", file.FileName);
+
+						// Add the path as StringContent
+						var pathContent = new StringContent("/profile_images");
+						content.Add(pathContent, "path");
+
+
+						using (var client = new HttpClient())
+						{
+							var response = await client.PostAsync(uploadUrl, content);
+							if (response.IsSuccessStatusCode)
+							{
+
+								string ProfileImage = await response.Content.ReadAsStringAsync();
+
+								_workerService.UploadProfileImage(workerId, ProfileImage);
+
+								return Ok(new ApiResponseModel<object>(true, new
+								{
+									message = "Profile image uploaded successfully!",
+									filePath = ProfileImage
+								}, null));
+							}
+							else
+							{
+								var errors = new
+								{
+									message = $"An error occurred: {await response.Content.ReadAsStringAsync()}"
+								};
+
+								return BadRequest(new ApiResponseModel<object>(false, null, errors));
+							}
+						}
 					}
 
-					model.ProfileImage = $"{uploadPath}/{uniqueFileName}";
-
-					_workerService.UploadProfileImage(workerId, model.ProfileImage);
-
-					return Ok(new ApiResponseModel<object>(true, new
-					{
-
-						message = "Profile image uploaded successfully!",
-						filePath = $"{uploadPath}/{uniqueFileName}"
-					}, null));
 				}
 				else
 				{
-					model.ProfileImage = profileImage;
-
-					_workerService.UploadProfileImage(workerId, model.ProfileImage);
-
-					return Ok(new ApiResponseModel<object>(true, new
+					var errors = new
 					{
+						File = file == null ? new[] { "Image not found!" } : null,
+					};
 
-						message = "Profile image updated successfully!",
-						filePath = profileImage
-					}, null));
+					return BadRequest(new ApiResponseModel<object>(false, null, errors));
 
 				}
 
