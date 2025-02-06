@@ -33,6 +33,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		private readonly SiteShiftService _siteShiftService;
 		private readonly WorkerShiftService _workerShiftService;
 		private readonly DashboardService _dashboardService;
+		private readonly BankDetailService _bankdetailService;
 
 		public WorkerController()
 		{
@@ -50,7 +51,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			_siteShiftService = new SiteShiftService();
 			_workerShiftService = new WorkerShiftService();
 			_dashboardService = new DashboardService();
-
+			_bankdetailService = new BankDetailService();
 		}
 
 
@@ -124,7 +125,29 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			ViewBag.SiteShifts = _siteShiftService.GetBySiteId(worker.SiteId);
 
 			var workerId = HttpContext.Session.GetInt32("WorkerId");
-			
+
+			//var bankDetails = new
+			//{
+			//	BankDetailId = 10,
+			//	WorkerId = workerId,
+			//	WorkerName = "Sharad K Kale",
+			//	AccountHolderName = "Sharad K Kale",
+			//	AccountNumber = "8547854002",
+			//	BankName = "State Bank of India",
+			//	IfscCode = "SBIN0004",
+			//	BranchName = "Shivaji Nagar, Pune",
+			//	BankProofType = "",
+			//	BankProofImage = "",
+			//	IsVerified = true,
+			//	UpdatedAt = "2025-02-01"
+			//};
+
+			var bankDetail = _bankdetailService.GetAllByWorkerId(id);
+			if (bankDetail.Count != 0)
+			{
+				ViewBag.BankDetails = bankDetail[0];
+			}
+
 
 			return View();
 		}

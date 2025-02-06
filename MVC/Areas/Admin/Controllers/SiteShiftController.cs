@@ -12,20 +12,29 @@ namespace GeneralTemplate.Areas.Admin.Controllers
 	{
 		private readonly SiteShiftService _siteShiftService;
 		private readonly SiteService _siteService;
+		private readonly ProjectService _projectService;
 
 		public SiteShiftController()
 		{
 			_siteShiftService = new SiteShiftService();
 			_siteService = new SiteService();
+			_projectService = new ProjectService();
 		}
 
 
-		public ActionResult Index()
+		public ActionResult Index(int ProjectId = 0, int SiteId = 0)
 		{
-			var allData = _siteShiftService.GetAll();
+			TempData["ProjectId"] = ProjectId;
+			TempData["SiteId"] = SiteId;
+
+			var allData = _siteShiftService.GetBySiteId(SiteId);
 			ViewBag.AllData = allData;
 			var sites = _siteService.GetAll();
 			ViewBag.Sites = sites;
+
+			ViewBag.Sites = _siteService.GetAll();
+			ViewBag.Projects = _projectService.GetAll();
+
 
 			return View();
 		}

@@ -1,0 +1,116 @@
+﻿@using OmSaiModels.Worker
+@model BankDetailModel
+@{
+    ViewData["Title"] = "Add Bank Details";
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["AreaName"] = "Worker";
+    ViewData["ControllerName"] = "Bank";
+    var bankdetails = ViewBag.BankDetail;
+}
+
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="page-title">
+                    @ViewData["Title"]
+                    <a class="btn btn-sm btn-primary" asp-action="Index" asp-controller="@ViewData["ControllerName"]" asp-area="@ViewData["AreaName"]">Bank Details List</a>
+                </h3>
+            </div>
+            <div class="col-sm-6 d-print-none">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="\">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Add Bank Details
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header--> <!--begin::App Content-->
+
+
+
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <partial name="~/Views/shared/_alertpartial.cshtml" />
+        <div asp-validation-summary="All"></div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12" id="leftCard">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>Worker Bank Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" asp-area="@ViewData["AreaName"]" asp-controller="@ViewData["ControllerName"]" asp-action="create">
+                            <div class="mb-3">
+                                <label for="workerId" class="form-label">Worker ID</label>
+                                <input type="text" class="form-control"
+                                       asp-for="WorkerName"
+                                       value="@(ViewBag.WorkerName ?? Model?.WorkerName ?? "")"
+                                       readonly>
+                                <input type="hidden" class="form-control"
+                                       asp-for="WorkerId"
+                                       value="@(ViewBag.BankDetail?.WorkerId?.ToString() ?? ViewBag.WorkerId?.ToString() ?? "")"
+                                       required>
+
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="accountHolderName" class="form-label">Account Holder Name</label>
+                                <input type="text" class="form-control"
+                                       asp-for="AccountHolderName"
+                                       value="@(ViewBag.BankDetail?.AccountHolderName ?? Model?.AccountHolderName ?? ViewBag.WorkerName ?? "")"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="accountNumber" class="form-label">Account Number</label>
+                                <input type="text" class="form-control"
+                                       asp-for="AccountNumber"
+                                       value="@(ViewBag.BankDetail?.AccountNumber ?? Model?.AccountNumber ?? "")"
+                                       placeholder="Enter Account Number"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ifscCode" class="form-label">IFSC Code</label>
+                                <input type="text" class="form-control"
+                                       asp-for="IfscCode"
+                                       value="@(ViewBag.BankDetail?.IfscCode ?? Model?.IfscCode ?? "")"
+                                       placeholder="Enter IFSC Code"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="bankName" class="form-label">Bank Name</label>
+                                <input type="text" class="form-control"
+                                       asp-for="BankName"
+                                       value="@(ViewBag.BankDetail?.BankName ?? Model?.BankName ?? "")"
+                                       placeholder="Enter Bank Name"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="branchName" class="form-label">Branch Name</label>
+                                <input type="text" class="form-control"
+                                       asp-for="BranchName"
+                                       value="@(ViewBag.BankDetail?.BranchName ?? Model?.BranchName ?? "")"
+                                       placeholder="Enter Branch Name"
+                                       required>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewData["Title"] = "Worker Bank Details";
+    Layout = "/Views/Shared/_Layout.cshtml";
+    ViewData["AreaName"] = "Worker";
+    ViewData["ControllerName"] = "Bank";
+    int serialNumber = 1;
+}
+
+@section css {
+    <style>
+        .btnEdit:hover {
+        cursor: pointer;
+        }
+    </style>
+}
+
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="page-title">
+                    @ViewData["Title"]
+                    @* <a class="btn btn-sm btn-primary" asp-action="Create" asp-controller="@ViewData["ControllerName"]" asp-area="@ViewData["AreaName"]">Add New</a> *@
+                </h3>
+            </div>
+            <div class="col-sm-6 d-print-none">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="\">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Bank Details List
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header--> <!--begin::App Content-->
+
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <partial name="~/Views/shared/_alertpartial.cshtml" />
+        <div class="row">
+
+            <div class="col-lg-12 col-md-12 col-sm-12" id="leftCard">
+                <div class="card p-4 d-print-none">
+                    <form method="get" asp-action="Index">
+                        <div class="row">
+                        <div class="col-md-4 mb-3">
+                                <label for="ProjectId" class="col-form-label">Project Name</label>
+                            <select id="ProjectId" name="ProjectId" class="form-control" required>
+                                <option value="" selected>Select Option</option>
+                                @foreach (var project in ViewBag.Projects)
+                                {
+                                        if (TempData["ProjectId"] != null && Convert.ToInt32(TempData["ProjectId"]) == project.ProjectId)
+                                        {
+                                            <option value="@project.ProjectId" selected>@project.ProjectName</option>
+                                        }else{
+                                            <option value="@project.ProjectId">@project.ProjectName</option>
+                                        }
+                                }
+                            </select>
+
+                            <span id="projectError" class="text-danger error-message"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="SiteId" class="col-form-label">Site Name</label>
+                            <select id="SiteId" name="SiteId" class="form-control" required>
+                                <option value="" selected>Select Option</option>
+                                @foreach (var site in ViewBag.Sites)
+                                {
+                                        if (TempData["SiteId"] != null && Convert.ToInt32(TempData["SiteId"]) == site.SiteId)
+                                        {
+                                            <option value="@site.SiteId" data-project-id="@site.ProjectId" style="display:none;">@site.SiteName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@site.SiteId" data-project-id="@site.ProjectId" style="display:none;">@site.SiteName</option>
+                                        }
+
+                                }
+                            </select>
+                            <span id="siteError" class="text-danger error-message"></span>
+                        </div>
+                        <div class="col-md-4 mb-3 pt-3">
+                            <button type="submit" class="btn btn-outline-info" style="margin-top:25px;">Search</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table card-table table-vcenter text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">Sr No.</th>
+                                    <th class="" scope="col">Worker Name</th>
+                                    <th class="" scope="col">Bank Name</th>
+                                    <th class="" scope="col">Account No.</th>
+                                    <th class="" scope="col">IFSC</th>
+                                    <th class="" scope="col">Last Updated At</th>
+                                    <th class="" scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var bank in ViewBag.AllData){
+                                    <tr>
+                                        <td style="width: 10px">@serialNumber</td>
+                                        <td class="" scope="col">@bank.WorkerName</td>
+                                        <td class="" scope="col">@bank.BankName</td>
+                                        <td class="" scope="col">@bank.AccountNumber</td>
+                                        <td class="" scope="col">@bank.IfscCode</td>
+                                        <td class="" scope="col">@bank.UpdatedAt.ToString("dd/mm/yyyy h:m")</td>
+                                        <td class="" scope="col"></td>
+                                    </tr>
+                                    serialNumber++;
+                                }
+
+                            </tbody>
+                         </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var $siteDropdown = $('#SiteId');
+
+            $('#ProjectId').change(function () {
+                var selectedProjectId = $(this).val(); // Get the selected ProjectId
+                let matched = 0;
+                let nmatched = 0;
+
+                $siteDropdown.val("");
+                if (selectedProjectId) {
+                    console.log('Filtering sites for Project ID:', selectedProjectId);
+
+                    // Filter and show only sites that belong to the selected project
+                    $siteDropdown.find('option').each(function () {
+                        var siteProjectId = $(this).data('project-id'); // Get the data-project-id attribute
+                        if (siteProjectId == selectedProjectId) {
+                            // console.log('Matched Count:', ++matched);
+                            $(this).show();
+                        }
+                        else{
+                            // console.log('N-Matched Count:', ++nmatched);
+                            $(this).hide();
+                        }
+                    });
+                }
+            });
+
+            $('#ProjectId').trigger('change');
+
+            let SiteId = getQueryStringValue("SiteId");
+            if (SiteId) {
+                $('#SiteId').val(SiteId)
+            }
+
+        });
+
+        function getQueryStringValue(key) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(key);
+        }
+
+    </script>
+}

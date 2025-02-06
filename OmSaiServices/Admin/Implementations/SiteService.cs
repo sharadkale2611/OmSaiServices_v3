@@ -57,7 +57,15 @@ namespace OmSaiServices.Admin.Implementations
             return GetAll(sp_r, mapEntity, GetParams());
         }
 
-        public SiteModel GetById(int id)
+		public List<SiteModel> GetByProjectId(int ProjectId)
+		{
+
+			// Define the mapping function
+			var mapEntity = new Func<IDataReader, SiteModel>(reader => _mapper.MapEntity<SiteModel>(reader));
+
+			return GetAll(sp_r, mapEntity, GetParams(null, ProjectId));
+		}
+		public SiteModel GetById(int id)
         {
             // Define the mapping function
             var mapEntity = new Func<IDataReader, SiteModel>(reader => _mapper.MapEntity<SiteModel>(reader));

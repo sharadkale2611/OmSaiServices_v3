@@ -19,6 +19,9 @@
         var ledger = ViewBag.Ledger;
     }
 
+    var bank = ViewBag.BankDetails;
+
+
 }
 
 <style>
@@ -86,7 +89,7 @@
     }
 
     .list-group-item {
-        padding: 0.35rem 0.50rem !important; 
+    padding: 0.35rem 0.50rem !important; 
     }
 
 </style>
@@ -100,8 +103,8 @@
             <div class="col-lg-4">
                 <div class="card">
                     <div class="card-header d-flex">
-                        <a asp-area="worker" asp-controller="worker" asp-action="Edit" asp-route-id="@worker.WorkerId" class="btn btn-outline-warning ml-1"><i class="fe fe-edit"></i> Edit Profile</a>
-                        <a class="btn btn-outline-warning ml-1"  onclick="$('#topcard').show()"><i class="fe fe-lock"></i> Change Password</a>
+                        <a asp-area="worker" asp-controller="worker" asp-action="Edit" asp-route-id="@worker.WorkerId" class="btn btn-outline-warning ml-1"><i class="fe fe-edit"></i> Edit</a>
+                        <a class="btn btn-outline-warning ml-1"  onclick="$('#topcard').show()"><i class="fe fe-lock"></i> Password</a>
                         <!-- Upload Profile Image Button -->
                         <button type="button" class="btn btn-outline-primary ml-auto btn-upload2" data-worker-id="@worker.WorkerId" data-bs-toggle="modal" data-bs-target="#ppUploadImageModal">
                             <i class="fe fe-camera"></i>
@@ -120,8 +123,8 @@
 
                             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                             <div class="form-floating mb-3">
-                                <label asp-for="OldPassword" class="form-label">Old Password:</label>
-                                <input type="password" asp-for="OldPassword" id="oldPassword" class="form-control" placeholder="Enter Old Password" required />
+                                <label asp-for="OldPassword" class="form-label">Old Password: <small class="text-muted">(@worker.Password)</small></label>
+                                <input type="password" asp-for="OldPassword" id="oldPassword" value="@worker.Password" class="form-control" placeholder="Enter Old Password" required />
                                 <span asp-validation-for="OldPassword" class="text-danger"></span>
                             </div>
                             <div class="form-floating mb-3">
@@ -162,8 +165,8 @@
                             {
                                 <div class="text-center mt-3">
                                     <span id="profileImage" class="avatar avatar-xxl"
-                                          style="background-image: url('@Url.Content($"~/{worker.ProfileImage}")')">
-                                       
+                                    style="background-image: url('@Url.Content($"~/{worker.ProfileImage}")')">
+
                                     </span>
 
                                 </div>
@@ -218,7 +221,6 @@
                                             @shift.ShiftName : (@DateTime.Today.Add(@shift.StartTime).ToString("hh:mm tt") -
                                             @DateTime.Today.Add(@shift.EndTime).ToString("hh:mm tt"))
                                         </option>
-
                                     }
                                 </select>
                             </div>
@@ -438,9 +440,50 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <partial name="~/Views/shared/_alertpartial.cshtml" />
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Wotker Bank Details</h5>
+                        <div>
+                            <a asp-area="worker" asp-controller="Bank" asp-action="Create" asp-route-id="@worker.WorkerId" class="btn btn-outline-white bg-white" target="_blank" >Update Bank Details</a>
+                        </div>
+                    </div>
+                    @if (bank != null)
+                    {
+                        <div class="card-body">
+                            <div class="row m-0">
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <p class="mb-0"><strong>Account Holder:</strong></p>
+                                    <p id="accountHolder">@(bank.AccountHolderName ?? "")</p>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <p class="mb-0"><strong>Account Number:</strong></p>
+                                    <p id="accountNumber">@(bank.AccountNumber ?? "")</p>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <p class="mb-0"><strong>Bank Name:</strong></p>
+                                    <p id="bankName">@(bank.BankName ?? "")</p>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <p class="mb-0"><strong>IFSC Code:</strong></p>
+                                    <p id="ifscCode">@(bank.IfscCode ?? "")</p>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <p class="mb-0"><strong>Branch:</strong></p>
+                                    <p id="branch">@(bank.BranchName ?? "")</p>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <p class="mb-0"><strong>Last Updated At</strong></p>
+                                    <p id="branch">@bank.UpdatedAt.ToString("dd/mm/yyyy h:m")</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
                 </div>
+
+
+
+
                 <div class="row">
                 <div class="card">
                    

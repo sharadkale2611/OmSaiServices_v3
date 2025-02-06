@@ -19,21 +19,21 @@ namespace GeneralTemplate.Areas.Admin.Controllers
         }
 
 
-        public ActionResult Index()
-        {
-            //var allData = _siteService.GetAll();
+		public ActionResult Index(int ProjectId = 0)
+		{
+			//var allData = _siteService.GetAll();
 
-            //return View(allData);
+			//return View(allData);
 
-            var allData = _siteService.GetAll();
-            ViewBag.AllData = allData;
+			var allData = _siteService.GetByProjectId(ProjectId);
+			ViewBag.AllData = allData;
 			ViewBag.Projects = _projectService.GetAll();
 
 			return View();
 
-        }
+		}
 
-        public IActionResult Create()
+		public IActionResult Create()
         {
             SiteModel s = new SiteModel();
 

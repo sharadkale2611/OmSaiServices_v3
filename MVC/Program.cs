@@ -9,13 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(DBConnection.DefaultConnection));
 
-// Add services to the container.
-builder.Services.AddControllersWithViews(options =>
-{
-	// Add global filters
-	options.Filters.Add<CustomErrorFilter>();
-	options.Filters.Add<SessionInfoFilter>();
-}).AddRazorRuntimeCompilation();
 
 
 //builder.Services.AddDistributedMemoryCache(); // For session
@@ -27,6 +20,8 @@ builder.Services.AddDistributedSqlServerCache(options =>
 	options.TableName = "SessionCache";
 });
 
+
+
 builder.Services.AddSession(options =>
 {
 	options.IdleTimeout = TimeSpan.FromMinutes(60); // Set session timeout
@@ -36,6 +31,15 @@ builder.Services.AddSession(options =>
 	options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensures cookies are sent over HTTPS
 	options.Cookie.MaxAge = TimeSpan.FromMinutes(60); // Ensure MaxAge is set
 });
+
+// Add services to the container.
+builder.Services.AddControllersWithViews(options =>
+{
+	// Add global filters
+	options.Filters.Add<CustomErrorFilter>();
+	options.Filters.Add<SessionInfoFilter>();
+}).AddRazorRuntimeCompilation();
+
 
 
 // Register CORS service
@@ -58,7 +62,6 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 
-app.UseCustomErrorMiddleware(); // Add this line before other middlewares
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -77,6 +80,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession(); // Enable session middleware
+app.UseCustomErrorMiddleware(); // Add this line before other middlewares
 
 
 app.UseEndpoints(endpoints =>

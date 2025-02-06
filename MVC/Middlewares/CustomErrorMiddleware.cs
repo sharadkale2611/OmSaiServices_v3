@@ -38,7 +38,12 @@ namespace GeneralTemplate.Middlewares
 
 			FileLogger.LogError(errorMessage);
 			_logger.LogError(exception, errorMessage);
-			context.Session.Clear();
+
+			if (context.Session != null)
+			{
+				context.Session.Clear();
+			}
+
 			context.Session.SetString("ErrorMessage", exception.Message);
 
 			context.Response.Redirect("/Account/Login");
