@@ -70,8 +70,33 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			return View();
 		}
 
-		public IActionResult Profile(int id)
+		public async Task<IActionResult> Profile(int id, int? year, int? month)
 		{
+
+			// Get the current date if no parameters are provided
+			DateTime today = DateTime.Today;
+			int currentYear = year ?? today.Year;
+			int currentMonth = month ?? today.Month;
+
+
+
+			// Ensure the month stays within the valid range (1-12)
+			if (currentMonth > 12)
+			{
+				currentMonth = 1;
+				currentYear++;
+			}
+			else if (currentMonth < 1)
+			{
+				currentMonth = 12;
+				currentYear--;
+			}
+
+
+			// Pass the values to the view
+			ViewBag.Year = currentYear;
+			ViewBag.Month = currentMonth;
+
 			var worker = _workerService.GetProfileById(id, null);
 			ViewBag.AllData = worker;
 
@@ -80,22 +105,24 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 				return RedirectToAction(nameof(Index));// nameof checks method compiletime to avoid errors
 			}
 
-			var ledger = _attendanceService.GetLedger(worker.WorkerId, worker.SiteId, worker.SiteShiftId, DateTime.Now.Year, DateTime.Now.Month);
+			_attendanceService.CreateLedger(worker.SiteId, worker.SiteShiftId, currentYear, currentMonth);
 
-			//var ledger = _attendanceService.GetLedger(1, 1, 1, 2025, 1);
+			var ledger = _attendanceService.GetLedger(worker.WorkerId, worker.SiteId, worker.SiteShiftId, currentYear, currentMonth);
+
+			//var ledger = _attendanceService.GetLedger(1, 13, 1, 2025, 2);
 			if (ledger.Count > 0)
 			{
 				ViewBag.Ledger = ledger[0];
 
 				// Directly use Year and Month as they are already integers
-				int year = ledger[0].Year;
-				int month = int.Parse(ledger[0].Month);
+				int year2 = ledger[0].Year;
+				int month2 = int.Parse(ledger[0].Month);
 
 				// Validate the month value
-				if (year > 0 && month >= 1 && month <= 12)
+				if (year2 > 0 && month2 >= 1 && month2 <= 12)
 				{
 					// Get the first day of the month
-					DateTime firstDayOfMonth = new DateTime(year, month, 1);
+					DateTime firstDayOfMonth = new DateTime(year2, month2, 1);
 
 					// Get the day number (1 = Monday, 2 = Tuesday, ..., 7 = Sunday)
 					int dayNumber = (int)firstDayOfMonth.DayOfWeek;
