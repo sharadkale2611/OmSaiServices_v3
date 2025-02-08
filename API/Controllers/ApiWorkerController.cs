@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OmSaiEnvironment;
 using OmSaiModels.Common;
 using OmSaiModels.Worker;
+using OmSaiServices.Admin.Implementations;
 using OmSaiServices.Worker.Implementations;
 using OmSaiServices.Worker.Implimentation;
 using System.IO;
@@ -18,6 +19,7 @@ namespace API.Controllers
 		private readonly WorkerAddressService _workerAddressService;
 		private readonly WorkerMobileNumbersService _workerMobileNumbersService;
 		private readonly WorkerDocumentService _workerDocumentService;
+		private readonly SiteShiftService _siteShiftService;
 
 
 		public ApiWorkerController()
@@ -26,8 +28,47 @@ namespace API.Controllers
 			_workerAddressService = new WorkerAddressService();
 			_workerMobileNumbersService = new WorkerMobileNumbersService();
 			_workerDocumentService = new WorkerDocumentService();
+			_siteShiftService = new SiteShiftService();
 
 		}
+
+
+		[HttpGet("get-site-shift-by-site-id/{id}")]
+		[Authorize]
+		public async Task<IActionResult> GetSiteShiftBysiteId(int id)
+		{
+			try
+			{
+				var shifts =  _siteShiftService.GetBySiteId(id);
+				if (shifts == null)
+				{
+					var errors = new
+					{
+						WorkmanId = new[] { "Site Shift not found!" }
+					};
+					return BadRequest(new ApiResponseModel<object>(false, null, errors));
+				}
+
+				return Ok(new ApiResponseModel<object>(true, shifts, null));
+
+			}
+			catch (Exception ex)
+			{
+				var errors = new
+				{
+					message = new[] { ex.Message }
+				};
+
+				return BadRequest(new ApiResponseModel<object>(false, null, errors));
+
+			}
+
+		}
+
+
+
+
+
 
 		[HttpGet("get-site-shift/{id}")]
 		[Authorize]

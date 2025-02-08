@@ -161,6 +161,9 @@ namespace OmSaiServices.Worker.Implementations
 					new SqlParameter("@EndMonth", filter.EndMonth ?? (object)DBNull.Value),
 					new SqlParameter("@StartYear", filter.StartYear ?? (object)DBNull.Value),
 					new SqlParameter("@EndYear", filter.EndYear ?? (object)DBNull.Value),
+					new SqlParameter("@StartDate", filter.StartDate),
+					new SqlParameter("@EndDate", filter.EndDate),
+
 
 				};
 

@@ -105,6 +105,9 @@ namespace OmSaiModels.Worker
 		public int? EndMonth { get; set; }
 		public int? StartYear { get; set; }
 		public int? EndYear { get; set; }
+		public DateOnly? StartDate { get; set; }
+		public DateOnly? EndDate { get; set; }
+
 	}
 
 

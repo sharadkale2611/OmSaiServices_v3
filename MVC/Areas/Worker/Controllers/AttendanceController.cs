@@ -21,6 +21,7 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 		private readonly SiteService _siteService;
 		private readonly SiteShiftService _siteShiftService;
 		private readonly DashboardService _dashboardService;
+		private readonly ProjectService _projectService;
 
 
 
@@ -32,19 +33,26 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 			_siteService = new SiteService();
 			_siteShiftService = new SiteShiftService();
 			_dashboardService = new DashboardService();
+			_projectService = new ProjectService();
+
 
 		}
 
-		public IActionResult Index()
+		public IActionResult Index(int ProjectId = 0, int SiteId = 0, string? startDate = null, string? endDate = null)
 		{
-
+			TempData["ProjectId"] = ProjectId;
+			TempData["SiteId"] = SiteId;
 
 			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
 			{
-				Year = DateTime.Now.Year
+				SiteId = SiteId,
+				StartDate = !string.IsNullOrEmpty(startDate) ? DateOnly.FromDateTime(DateTime.Parse(startDate)) : (DateOnly?)null,
+				EndDate = !string.IsNullOrEmpty(endDate) ? DateOnly.FromDateTime(DateTime.Parse(endDate)) : (DateOnly?)null,
 			};
 
 			ViewBag.AttendanceHistory = _attendanceService.GetAll(Attendancefilter);
+			ViewBag.Sites = _siteService.GetAll();
+			ViewBag.Projects = _projectService.GetAll();
 			return View();
 		}
 

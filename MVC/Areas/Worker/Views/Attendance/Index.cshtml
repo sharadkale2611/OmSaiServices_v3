@@ -23,7 +23,6 @@
 }
 
 
-
 <div class="app-content-header">
     <!--begin::Container-->
     <div class="container-fluid">
@@ -55,6 +54,74 @@
 
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12" id="leftCard">
+
+
+<div class="card p-4 d-print-none">
+    <form method="get" asp-action="Index" onsubmit="return validateDates()">
+        <div class="row">
+            <!-- Project Dropdown -->
+            <div class="col-md-3 mb-3">
+                <label for="ProjectId" class="col-form-label">Project Name</label>
+                <select id="ProjectId" name="ProjectId" class="form-control" required>
+                    <option value="" selected>Select Option</option>
+                    @foreach (var project in ViewBag.Projects)
+                    {
+                        var isSelected = TempData["ProjectId"] != null && Convert.ToInt32(TempData["ProjectId"]) == project.ProjectId;
+                        <option value="@project.ProjectId" selected="@(isSelected ? "selected" : null)">
+                            @project.ProjectName
+                        </option>
+                    }
+                </select>
+                <span id="projectError" class="text-danger error-message"></span>
+            </div>
+
+            <!-- Site Dropdown -->
+            <div class="col-md-3 mb-3">
+                <label for="SiteId" class="col-form-label">Site Name</label>
+                <select id="SiteId" name="SiteId" class="form-control" required>
+                    <option value="" selected>Select Option</option>
+                    @foreach (var site in ViewBag.Sites)
+                    {
+                        var isSelected = TempData["SiteId"] != null && Convert.ToInt32(TempData["SiteId"]) == site.SiteId;
+                        <option value="@site.SiteId" data-project-id="@site.ProjectId" selected="@(isSelected ? "selected" : null)">
+                            @site.SiteName
+                        </option>
+                    }
+                </select>
+                <span id="siteError" class="text-danger error-message"></span>
+            </div>
+
+            <!-- Start Date -->
+            <div class="col-md-3 mb-3">
+                <label for="startDate" class="col-form-label">Start Date</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" 
+                    value="@Context.Request.Query["startDate"]">
+                <span id="startDateError" class="text-danger error-message"></span>
+            </div>
+
+            <!-- End Date -->
+            <div class="col-md-3 mb-3">
+                <label for="endDate" class="col-form-label">End Date</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" 
+                    value="@Context.Request.Query["endDate"]">
+                <span id="endDateError" class="text-danger error-message"></span>
+            </div>
+
+            <!-- Date Range Buttons -->
+            <div class="col-md-12  mt-2 text-center">
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setLastWeek()">Last Week</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setLastMonth()">Last Month</button>
+                <button type="button" class="btn btn-outline-success btn-sm" onclick="setCurrentMonth()">Current Month</button>
+
+            </div>
+
+            <!-- Search Button -->
+            <div class="col-md-12 text-center mt-3 d-flex justify-content-center">
+                <button type="submit" class="btn btn-block btn-info" style="max-width:200px">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
 
 
                 <div class="card">
@@ -144,9 +211,98 @@
 
     <script>
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#table').DataTable();
+            var $siteDropdown = $('#SiteId');
+
+            $('#ProjectId').change(function () {
+                var selectedProjectId = $(this).val(); // Get the selected ProjectId
+                let matched = 0;
+                let nmatched = 0;
+                $siteDropdown.val("");
+                if (selectedProjectId) {
+                    console.log('Filtering sites for Project ID:', selectedProjectId);
+
+                    // Filter and show only sites that belong to the selected project
+                    $siteDropdown.find('option').each(function () {
+                        var siteProjectId = $(this).data('project-id'); // Get the data-project-id attribute
+                        if (siteProjectId == selectedProjectId) {
+                            // console.log('Matched Count:', ++matched);
+                            $(this).show();
+                        }
+                        else{
+                            // console.log('N-Matched Count:', ++nmatched);
+                            $(this).hide();
+                        }
+                    });
+                }
+            });
+            $('#ProjectId').trigger('change');
+
+            let SiteId = getQueryStringValue("SiteId");
+            if (SiteId) {
+                $('#SiteId').val(SiteId)
+            }
         });
+
+
+        function validateDates() {
+               let startDate = document.getElementById("startDate").value;
+               let endDate = document.getElementById("endDate").value;
+               let tomorrow = new Date();
+               tomorrow.setDate(tomorrow.getDate() + 1);
+               let tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+               if (startDate && endDate) {
+                   if (endDate < startDate) {
+                       document.getElementById("endDateError").textContent = "End date must be greater than or equal to Start date.";
+                       return false;
+                   }
+                   if (endDate > tomorrowStr) {
+                       document.getElementById("endDateError").textContent = "End date cannot be greater than tomorrow.";
+                       return false;
+                   }
+               }
+               document.getElementById("endDateError").textContent = ""; // Clear error if valid
+               return true;
+           }
+
+           function setLastWeek() {
+               let today = new Date();
+               let lastWeekStart = new Date();
+               lastWeekStart.setDate(today.getDate() - 7);
+
+               document.getElementById("startDate").value = lastWeekStart.toISOString().split("T")[0];
+               document.getElementById("endDate").value = today.toISOString().split("T")[0];
+           }
+
+            function setLastMonth() {
+                let today = new Date();
+                let lastMonth = today.getMonth() - 1;
+                let lastYear = today.getFullYear();
+
+                // If it's January, go to previous year
+                if (lastMonth < 0) {
+                    lastMonth = 11; // December
+                    lastYear -= 1;
+                }
+
+                let lastMonthStart = new Date(lastYear, lastMonth, 1); // 1st day of last month
+                let lastMonthEnd = new Date(lastYear, lastMonth + 1, 0); // Last day of last month
+
+                document.getElementById("startDate").value = lastMonthStart.toISOString().split("T")[0];
+                document.getElementById("endDate").value = lastMonthEnd.toISOString().split("T")[0];
+            }
+
+
+
+            function setCurrentMonth() {
+                let today = new Date();
+                let currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+                document.getElementById("startDate").value = currentMonthStart.toISOString().split("T")[0];
+                document.getElementById("endDate").value = today.toISOString().split("T")[0];
+            }
 
     </script>
 }
