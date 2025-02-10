@@ -105,11 +105,33 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 				return RedirectToAction(nameof(Index));// nameof checks method compiletime to avoid errors
 			}
 
-			_attendanceService.CreateLedger(worker.SiteId, worker.SiteShiftId, currentYear, currentMonth);
+			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
+			{
+				SiteId = worker.SiteId,
+				WorkerId = worker.WorkerId,
+				Month = currentMonth,
+				Year = currentYear,
+				RecordCount = 2
+			};
 
-			var ledger = _attendanceService.GetLedger(worker.WorkerId, worker.SiteId, worker.SiteShiftId, currentYear, currentMonth);
+			var AttendanceHistory = _attendanceService.GetAll(Attendancefilter);
+			if (AttendanceHistory.Count > 0)
+			{
+				var attData = AttendanceHistory[0];
+				DateTime createdAt = attData.CreatedAt; // Replace with your actual service call
 
-			//var ledger = _attendanceService.GetLedger(1, 13, 1, 2025, 2);
+				// Extract month and year
+				int attMonth = createdAt.Month;
+				int attYear = createdAt.Year;
+
+				_attendanceService.CreateLedger(attData.SiteId, attData.ShiftId, attYear, attMonth);
+
+				}
+
+
+			var ledger = _attendanceService.GetLedger(worker.WorkerId, null, null, currentYear, currentMonth);
+
+			//var ledger = _attendanceService.GetLedger(5, null, null, 2025, 1);
 			if (ledger.Count > 0)
 			{
 				ViewBag.Ledger = ledger[0];
@@ -140,13 +162,15 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 				}
 			}
 
-			WorkerAttendanceFilter Attendancefilter = new WorkerAttendanceFilter
+			WorkerAttendanceFilter Attendancefilter2 = new WorkerAttendanceFilter
 			{
 				WorkerId = id,
+				Year = currentYear,
+				Month = currentMonth,
 				RecordCount = 10
 			};
 
-			ViewBag.AttendanceHistory = _attendanceService.GetAll(Attendancefilter);
+			ViewBag.AttendanceHistory = _attendanceService.GetAll(Attendancefilter2);
 			ViewBag.WorkerDocuments = _workerDocumentService.GetAll(id);
 			ViewBag.Addresses = _workerAddressService.GetByWorkerId(id);
 			ViewBag.SiteShifts = _siteShiftService.GetBySiteId(worker.SiteId);

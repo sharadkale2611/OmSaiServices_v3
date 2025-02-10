@@ -72,22 +72,22 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .calendar-box.P {
+        .calendar-box.P, .attendance-summary>li>.P {
             background-color: #28a745; /* Green for Present */
             color: #fff;
         }
 
-        .calendar-box.A {
+        .calendar-box.A, .attendance-summary>li>.A {
             background-color: #dc3545; /* Red for Absent */
             color: #fff;
         }
 
-        .calendar-box.L {
+        .calendar-box.L, .attendance-summary>li>.L {
             background-color: #ffc107; /* Yellow for Leave */
             color: #000;
         }
 
-        .calendar-box.H {
+        .calendar-box.H, .attendance-summary>li>.H {
             background-color: #17a2b8; /* Teal for Half Day */
             color: #fff;
         }
@@ -344,28 +344,30 @@
                         <div class="container p-2">
                             @if (ViewBag.Ledger != null)
                             {
-                                <ul class="list-group mb-4">
+                                <ul class="list-group mb-4 attendance-summary">
                                     <li class="list-group-item d-flex justify-content-between align-items-start">
                                         <div class="ms-2 me-auto">
                                             <div class="fw-bold">Total Days</div>
                                         </div>
-                                        <span class="badge bg-primary rounded-pill">@ledger.TotalDays</span>
+                                        <span class="badge bg-primary rounded-pill">
+                                            @(ledger.DaysPresent + ledger.DaysAbsent + ledger.DaysLeave + ledger.DaysHalfDay)
+                                            </span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-start">
                                         <div class="ms-2 me-auto">Present</div>
-                                        <span class="badge bg-primary rounded-pill">@ledger.DaysPresent</span>
+                                        <span class="badge P rounded-pill">@ledger.DaysPresent</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-start">
                                         <div class="ms-2 me-auto">Absent</div>
-                                        <span class="badge bg-primary rounded-pill">@ledger.DaysAbsent</span>
+                                        <span class="badge A rounded-pill">@ledger.DaysAbsent</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-start">
                                         <div class="ms-2 me-auto">Leave</div>
-                                        <span class="badge bg-primary rounded-pill">@ledger.DaysLeave</span>
+                                        <span class="badge L rounded-pill">@ledger.DaysLeave</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-start">
                                         <div class="ms-2 me-auto">Half Day</div>
-                                        <span class="badge bg-primary rounded-pill">@ledger.DaysHalfDay</span>
+                                        <span class="badge H rounded-pill">@ledger.DaysHalfDay</span>
                                     </li>
                                 </ul>
                             }
@@ -621,7 +623,7 @@
                                                 {
                                                     <span class="status-icon bg-danger"></span> <span>Not Verified</span>
                                                     @* <button class="btn btn-primary btn-sm" onclick="verifyDocument(doc.DocumentId)">Verify</button> *@
-                                                    <a class=" btn btn-primary btn-sm btn-verify" data-document-id="@doc.WorkerDocumentId">
+                                                    <a class=" btn btn-primary btn-sm text-white btn-verify" data-document-id="@doc.WorkerDocumentId">
                                                         Verify
                                                      @*   data_id="@doc.id"
                                                        data_display="@doc.IsVerified"> *@
