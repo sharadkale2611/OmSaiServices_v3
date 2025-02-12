@@ -23,7 +23,6 @@ namespace OmSaiServices.Worker.Implementations
 			_mapper = new Mapper();
 		}
 
-
 		public ValidateAttendanceModel ValidateAttendance(int WorkerId)
 		{
 			// Define the input and output parameters
@@ -36,8 +35,8 @@ namespace OmSaiServices.Worker.Implementations
 				new SqlParameter("@IsAttendanceAllowed", SqlDbType.Bit) { Direction = ParameterDirection.Output },
 				new SqlParameter("@NewStatus", SqlDbType.NVarChar, 20) { Direction = ParameterDirection.Output },
 				new SqlParameter("@StatusCode", SqlDbType.NVarChar, 20) { Direction = ParameterDirection.Output },
-				new SqlParameter("@TimeDiffInMinutes", SqlDbType.Int) { Direction = ParameterDirection.Output },
 
+				//new SqlParameter("@TimeDiffInMinutes", SqlDbType.Int) { Direction = ParameterDirection.Output },
 				new SqlParameter("@SiteId", SqlDbType.Int) { Direction = ParameterDirection.Output },
 				new SqlParameter("@SiteShiftId", SqlDbType.Int) { Direction = ParameterDirection.Output },
 				new SqlParameter("@GpsLocation", SqlDbType.NVarChar, 100) { Direction = ParameterDirection.Output },

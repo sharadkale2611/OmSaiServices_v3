@@ -1,4 +1,6 @@
-﻿@using OmSaiModels.Worker;
+﻿@using OmSaiEnvironment;
+
+@using OmSaiModels.Worker;
 @model WorkerAttendanceModel;
 
 
@@ -7,7 +9,10 @@
     Layout = "/Views/Shared/_Layout.cshtml";
     ViewData["AreaName"] = "Worker";
     ViewData["ControllerName"] = "Attendance";
+    var baseUrl = Urls.mvcURL;
+
     int serialNumber = 0;
+
 }
 
 
@@ -167,11 +172,11 @@
                                         <td>@attendance.SiteName</td>
                                         <td>@attendance.WorkerName</td>
                                         <td>
-                                            <img src="@attendance.InSelfiPath" class="selfie-image border rounded shadow-lg" style="max-height:45px;" />
+                                            <img src="@($"{baseUrl}/{attendance.InSelfiPath}")" class="selfie-image border rounded shadow-lg" style="max-height:45px;" />
                                             @attendance.InTime?.ToString("hh:mm tt")
                                         </td>
                                         <td>
-                                            <img src="@attendance.OutSelfiPath" class="selfie-image border rounded shadow-lg" style="max-height:45px;" />
+                                            <img src="@($"{baseUrl}/{attendance.OutSelfiPath}")" class="selfie-image border rounded shadow-lg" style="max-height:45px;" />
                                             @attendance.OutTime?.ToString("hh:mm tt")
                                         </td>
                                         <td>

@@ -111,7 +111,6 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 				// Check if an image is provided
 				if (SelfieImage == null || SelfieImage.Length == 0)
 				{
-
 					var errors = new
 					{
 						SelfieImage = new[] { "Selfie image is required!" }
@@ -121,16 +120,56 @@ namespace GeneralTemplate.Areas.Worker.Controllers
 
 				try
 				{
-					var uploadPath = "selfies"; // Define your folder path
-					var maxFileSizeKb = 30; // 30KB size limit
-					var quality = 20;
-					var filePath = await _mms.SaveAndCompressImageAsync(SelfieImage, uploadPath, maxFileSizeKb, quality);
+					string uploadPath = "media/selfies";
 
-					// Set the selfie path in the model
-					model.SelfieImage = filePath;
+					if (SelfieImage != null && SelfieImage.Length > 0)
+					{
+						var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", uploadPath);
 
-					// Call the service to manage attendance
-					_attendanceService.ManageAttendance(model);
+						if (!Directory.Exists(filePath))
+							Directory.CreateDirectory(filePath);
+
+						var uniqueFileName = $"{Path.GetFileNameWithoutExtension(SelfieImage.FileName)}_{Guid.NewGuid()}{Path.GetExtension(SelfieImage.FileName)}";
+						var completeFilePath = Path.Combine(filePath, uniqueFileName);
+
+						using (var stream = new FileStream(completeFilePath, FileMode.Create))
+						{
+							SelfieImage.CopyTo(stream);
+						}
+
+						model.SelfieImage = $"{uploadPath}/{uniqueFileName}";
+
+						// Call the service to manage attendance
+						_attendanceService.ManageAttendance(model);
+
+						return Ok(new ApiResponseModel<object>(true, new
+						{
+							message = "Selfie image uploaded successfully!",
+							filePath = $"{uploadPath}/{uniqueFileName}"
+						}, null));
+					}
+					else
+					{
+						var response = new
+						{
+							success = false,
+							data = (object)null,
+							errors = new
+							{
+								message = "Selfie image not found!"
+							}
+						};
+					}
+
+
+					//var uploadPath = "selfies"; // Define your folder path
+					//var maxFileSizeKb = 30; // 30KB size limit
+					//var quality = 20;
+					//var filePath = await _mms.SaveAndCompressImageAsync(SelfieImage, uploadPath, maxFileSizeKb, quality);
+
+					//// Set the selfie path in the model
+					//model.SelfieImage = filePath;
+
 
 
 					//return Ok(new { FilePath = filePath, Message = "Image uploaded successfully." });
