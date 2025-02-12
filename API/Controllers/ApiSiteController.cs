@@ -2,10 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OmSaiModels.Common;
-using OmSaiModels.Worker;
 using OmSaiServices.Admin.Implementations;
 
-namespace OmSaiServices_v3.Areas.Worker.Controllers
+namespace API.Controllers
 {
 	[Route("api/site")]
 	[ApiController]
@@ -18,14 +17,13 @@ namespace OmSaiServices_v3.Areas.Worker.Controllers
 			_siteService = new SiteService();
 		}
 
-
 		[HttpGet("/")]
 		[Authorize(AuthenticationSchemes = "Jwt")]
 		public async Task<IActionResult> GetSites()
 		{
 			try
 			{
-				var sites =  _siteService.GetAll();
+				var sites = _siteService.GetAll();
 				if (sites == null)
 				{
 					var errors = new
